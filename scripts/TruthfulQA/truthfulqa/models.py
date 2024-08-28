@@ -85,6 +85,10 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
         model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif model == "instructive_debiasing":
+        model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
     if tokenizer is None:
         tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -166,6 +170,10 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
         mode = 'gender'
         projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
         model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif model == "instructive_debiasing":
+        model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
     if tokenizer is None:
