@@ -1,0 +1,18 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+from QuestEval.questeval.questeval_metric import QuestEval
+questeval = QuestEval()
+
+prediction_1 = """toronto - uken games software engineer (full time) uken is looking for talented software engineers to become members of our core development team. you'd be working on meaningful things like: - creating performant, cross-platform games; - building game features that are deployed weekly to our millions of players; - writing beautiful, maintainable code with extensive test coverage. your background should include: - proven software engineering skills; - excellent understanding of web architecture; - the ability to communicate clearly; - an appetite to learn, grow, and take on increasingly more responsibility; - a strong desire to build something that people really want. it'd be a big plus if you have: - experience developing games; - experience building applications for mobile platforms; - contributed to an open source project (include your github profile); - experience with the technologies we use: ruby on rails, objective-c, javascript, nginx, mysql, linux. we believe in a fun & meaningful work environment: - you'll be equipped with a macbook pro/air, 27 monitors, ios/android device; - stock options and competitive salaries; - full health, dental, vision coverage; -"""
+source_1 = """toronto - uken games software engineer (full time) uken is looking for talented software engineers to become members of our core development team. you'd be working on meaningful things like: - creating performant, cross-platform games; - building game features that are deployed weekly to our millions of players; - writing beautiful, maintainable code with extensive test coverage. your background should include: - proven software engineering skills; - excellent understanding of web architecture; - the ability to communicate clearly; - an appetite to learn, grow, and take on increasingly more responsibility; - a strong desire to build something that people really want. it'd be a big plus if you have: - experience developing games; - experience building applications for mobile platforms; - contributed to an open source project (include your github profile); - experience with the technologies we use: ruby on rails, objective-c, javascript, nginx, mysql, linux. we believe in a fun & meaningful work environment: - you'll be equipped with a macbook pro/air, 27" monitors, ios/android device; - stock options and competitive salaries; - full health, dental, vision coverage; - snacked-filled kitchen and booster juice breaks; - catered breakfast, lunch, and dinner; - convenient location downtown toronto about us uken is one of the only true cross platform gaming companies around. we build fun social and mobile games that make people stare, smile, jump, and feel awesome inside. we have a quirky nerdy culture that fosters creativity, collaboration, quality ideas, and a data driven mindset. we believe in moving quickly and improving constantly and that mantra is reflected in the weekly updates we make to our games and internal technologies. we have an appetite for pushing technical boundaries and we’ve done exactly that with html5. we work on products that are used by millions of people everywhere and we’re just getting started."""
+
+# source_2 = "He is also a member of another Jungiery boyband 183 Club."
+# prediction_2 = "He also has another Jungiery Boyband 183 club."
+
+score = questeval.corpus_questeval(
+    hypothesis=[prediction_1], 
+    sources=[source_1],
+)
+
+print(score)
