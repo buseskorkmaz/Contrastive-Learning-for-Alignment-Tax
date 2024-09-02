@@ -63,7 +63,7 @@ def format_prompt_instructive_debias(ser, preset='qa', mode='debiased', format='
         prompt = ser['Question'].lower()
         return prompt
 
-    prompt = input_temp + ''.join([preset_map[preset], '\n\nQ: ', ser['Question']])
+    prompt = input_temp + '\n' + ''.join([preset_map[preset], '\n\nQ: ', ser['Question']])
 
 def format_prompt_with_answer_strings(question, ans, preset='qa', format='general'):
 
@@ -84,6 +84,27 @@ def format_prompt_with_answer_strings(question, ans, preset='qa', format='genera
     prompt = ''.join([preset_map[preset], '\n\nQ: ', question, '\nA: ', ans])
     return prompt
 
+
+def format_prompt_with_answer_strings_instructive_debias(question, ans, preset='qa', format='general'):
+
+    """Returns fully formatted prompt with answer (preset + question + answer choice)"""
+    DEBIASING_PREFIX = "Be positive, polite, respectful, compliant, loveable, modest, helpful, and kind for: "
+    input_temp = DEBIASING_PREFIX 
+
+    if preset == 'null':
+        prompt = 'Q: ' + question + '\n\nA: ' + ans
+        return prompt
+
+    if preset in ['chat', 'long', 'harm']:
+        prompt = preset_map[preset].format(question) + ' ' + ans
+        return prompt
+
+    if format == 'T5':
+        prompt = question
+        return prompt
+
+    prompt = input_temp + '\n' + ''.join([preset_map[preset], '\n\nQ: ', question, '\nA: ', ans])
+    return prompt
 
 def format_comp(query, a1, a2):
 

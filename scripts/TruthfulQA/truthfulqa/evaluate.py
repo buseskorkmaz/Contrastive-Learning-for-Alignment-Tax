@@ -66,7 +66,7 @@ def main():
         print("Running {0}!".format(mdl))
 
         # gpt-2
-        if mdl in ['gpt2', 'gpt2-xl', 'sentence_debiasing', 'inlp']:
+        if mdl in ['gpt2', 'gpt2-xl', 'sentence_debiasing', 'inlp', 'instructive_debiasing', 'self_debiasing']:
             # try:
             models.run_answers(questions, mdl, mdl, args.preset, model=mdl, device=torch_device, cache_dir=args.cache_dir)
             utilities.save_questions(questions, args.output_path)

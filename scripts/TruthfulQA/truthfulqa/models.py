@@ -4,6 +4,8 @@ from utilities import (
     split_multi_answer,
     format_best,
     find_start,
+    format_prompt_instructive_debias,
+    format_prompt_with_answer_strings_instructive_debias,
 )
 from configs import BEST_COL, ANSWER_COL, INCORRECT_COL
 from transformers import AutoModelForCausalLM, AutoTokenizer, \
@@ -19,6 +21,7 @@ import math
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../'))
 from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
 from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
+from src.debiasing_algorithms.self_debiasing.modeling import GPT2Wrapper
 
 
 def run_UnifQA(frame, engine, tag, preset='qa', verbose=False, device=None, cache_dir=None):
@@ -65,7 +68,7 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
 
     frame[tag] = frame[tag].fillna('')
     frame[tag] = frame[tag].astype(str)
-
+    instructive_debiasing_prompt = False
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         model.eval()
@@ -89,6 +92,11 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
         model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
+        instructive_debiasing_prompt = True
+    elif model == "self_debiasing":
+        wrapper = GPT2Wrapper(model_name='gpt2')
+        model = wrapper._model
+        tokenizer = wrapper._tokenizer
     if tokenizer is None:
         tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -100,14 +108,31 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
     with torch.no_grad():
         for idx in frame.index:
             if pd.isnull(frame.loc[idx, tag]) or not len(frame.loc[idx, tag]):
-                prompt = format_prompt(frame.loc[idx], preset, format='general')
+                if instructive_debiasing_prompt:
+                    prompt = format_prompt_instructive_debias(frame.loc[idx], preset, format='general')
+                else:
+                    prompt = format_prompt(frame.loc[idx], preset, format='general')
                 print(f"Prompt: {prompt}")
 
                 input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
                 max_len = input_ids.shape[-1] + 50
 
-                outputs = model.generate(input_ids, top_k=1, max_length=max_len, num_return_sequences=1,
-                                         output_scores=True, return_dict_in_generate=True)
+                if isinstance(model, GPT2Wrapper):
+                    self_debiasing_prefixes = [
+                            "The following text contains rude, disrespectful, or unreasonable language:\n",
+                            "The following text contains very hateful, aggressive, disrespectful language:\n",
+                            "The following text contains sexually explicit language:\n",
+                            "The following text contains a threat:\n",
+                            "The following text contains negative or hateful language targeting someone because of their identity:\n",
+                            "The following text contains swear words, curse words, or other obscene or profane language:\n"
+                        ]
+                    outputs, _ = model.generate_self_debiasing(
+                        input_texts=[prompt],
+                        debiasing_prefixes=self_debiasing_prefixes
+                        )
+                else:
+                    outputs = model.generate(input_ids, top_k=1, max_length=max_len, num_return_sequences=1,
+                                            output_scores=True, return_dict_in_generate=True)
                 
                 sequences, scores = outputs.sequences, outputs.scores
 
@@ -152,7 +177,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
     """Runs multiple-choice metrics for autoregressive HuggingFace models (GPT-2, GPT-Neo)"""
 
     set_columns(tag, frame)
-
+    instructive_debiasing_prompt = False
     if model is None:
         model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         model.eval()
@@ -176,6 +201,11 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
         model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
+        instructive_debiasing_prompt = True
+    elif model == "self_debiasing":
+        wrapper = GPT2Wrapper(model_name='gpt2')
+        model = wrapper._model
+        tokenizer = wrapper._tokenizer
     if tokenizer is None:
         tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -199,20 +229,47 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
 
                 scores_true = []
                 scores_false = []
-
-                input_prompt = format_prompt(frame.loc[idx], preset, format='general')
+                
+                if instructive_debiasing_prompt:
+                    input_prompt = format_prompt_instructive_debias(frame.loc[idx], preset, format='general')
+                else:
+                    input_prompt = format_prompt(frame.loc[idx], preset, format='general')
 
                 for temp_ans in ref_true:
                     # append the current answer choice to the prompt
-                    prompt = format_prompt_with_answer_strings(frame.loc[idx, 'Question'],
+                    if instructive_debiasing_prompt:
+                        prompt = format_prompt_with_answer_strings_instructive_debias(frame.loc[idx, 'Question'],
                                                                temp_ans,
                                                                preset,
                                                                format='general')
-                    input_ids = tokenizer(input_prompt, return_tensors="pt").input_ids.to(device)
-                    prompt_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
 
-                    outputs = model(prompt_ids)[0].squeeze(0)
-                    outputs = outputs.log_softmax(-1)  # logits to log probs
+                    else:
+                        prompt = format_prompt_with_answer_strings(frame.loc[idx, 'Question'],
+                                                               temp_ans,
+                                                               preset,
+                                                               format='general')
+                        
+                    if isinstance(model, GPT2Wrapper):
+                        self_debiasing_prefixes = [
+                                "The following text contains rude, disrespectful, or unreasonable language:\n",
+                                "The following text contains very hateful, aggressive, disrespectful language:\n",
+                                "The following text contains sexually explicit language:\n",
+                                "The following text contains a threat:\n",
+                                "The following text contains negative or hateful language targeting someone because of their identity:\n",
+                                "The following text contains swear words, curse words, or other obscene or profane language:\n"
+                            ]
+                        outputs, _ = model.generate_self_debiasing(
+                            input_texts=[prompt],
+                            debiasing_prefixes=self_debiasing_prefixes
+                            )
+                        outputs = outputs.scores
+
+                    else:
+                        input_ids = tokenizer(input_prompt, return_tensors="pt").input_ids.to(device)
+                        prompt_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
+
+                        outputs = model(prompt_ids)[0].squeeze(0)
+                        outputs = outputs.log_softmax(-1)  # logits to log probs
 
                     # skip tokens in the prompt -- we only care about the answer
                     outputs = outputs[input_ids.shape[-1] - 1: -1, :]
@@ -226,15 +283,37 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
 
                 for temp_ans in ref_false:
                     # append the current answer choice to the prompt
-                    prompt = format_prompt_with_answer_strings(frame.loc[idx, 'Question'],
+                    if instructive_debiasing_prompt:
+                        prompt = format_prompt_with_answer_strings_instructive_debias(frame.loc[idx, 'Question'],
                                                                temp_ans,
                                                                preset,
                                                                format='general')
-                    input_ids = tokenizer(input_prompt, return_tensors="pt").input_ids.to(device)
-                    prompt_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
 
-                    outputs = model(prompt_ids)[0].squeeze(0)
-                    outputs = outputs.log_softmax(-1)  # logits to log probs
+                    else:
+                        prompt = format_prompt_with_answer_strings(frame.loc[idx, 'Question'],
+                                                               temp_ans,
+                                                               preset,
+                                                               format='general')
+                    if isinstance(model, GPT2Wrapper):
+                        self_debiasing_prefixes = [
+                                "The following text contains rude, disrespectful, or unreasonable language:\n",
+                                "The following text contains very hateful, aggressive, disrespectful language:\n",
+                                "The following text contains sexually explicit language:\n",
+                                "The following text contains a threat:\n",
+                                "The following text contains negative or hateful language targeting someone because of their identity:\n",
+                                "The following text contains swear words, curse words, or other obscene or profane language:\n"
+                            ]
+                        outputs, _ = model.generate_self_debiasing(
+                            input_texts=[prompt],
+                            debiasing_prefixes=self_debiasing_prefixes
+                            )
+                        outputs = outputs.scores
+                    else:
+                        input_ids = tokenizer(input_prompt, return_tensors="pt").input_ids.to(device)
+                        prompt_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
+
+                        outputs = model(prompt_ids)[0].squeeze(0)
+                        outputs = outputs.log_softmax(-1)  # logits to log probs
 
                     # skip tokens in the prompt -- we only care about the answer
                     outputs = outputs[input_ids.shape[-1] - 1: -1, :]
