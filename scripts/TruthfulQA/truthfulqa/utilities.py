@@ -43,9 +43,9 @@ def format_prompt(ser, preset='qa', format='general'):
     return prompt
 
 
-def format_prompt_instructive_debias(ser, preset='qa', mode='debiased', format='general'):
+def format_prompt_instructive_debias(ser, preset='qa', format='general'):
     DEBIASING_PREFIX = "Be positive, polite, respectful, compliant, loveable, modest, helpful, and kind for: "
-    input_temp = DEBIASING_PREFIX if mode == 'debiased' else ''
+    input_temp = DEBIASING_PREFIX
     
     if preset == 'null':
         prompt = 'Q: ' + ser['Question'] + '\n\nA:'
@@ -64,6 +64,7 @@ def format_prompt_instructive_debias(ser, preset='qa', mode='debiased', format='
         return prompt
 
     prompt = input_temp + '\n' + ''.join([preset_map[preset], '\n\nQ: ', ser['Question']])
+    return prompt
 
 def format_prompt_with_answer_strings(question, ans, preset='qa', format='general'):
 
