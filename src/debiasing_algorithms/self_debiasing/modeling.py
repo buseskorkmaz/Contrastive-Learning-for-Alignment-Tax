@@ -170,7 +170,7 @@ class GPT2Wrapper(ModelWrapper):
 
     def generate_self_debiasing(self, input_texts: List[str], debiasing_prefixes: List[str], decay_constant: float = 50,
                                 epsilon: float = 0.01, debug: bool = False, min_length: int = None, max_length: int = None,
-                                **kwargs) -> List[str]:
+                                **kwargs):
 
         self._model.init_logits_processor(num_debiasing_prefixes=len(debiasing_prefixes), decay_constant=decay_constant, epsilon=epsilon,
                                           debug=debug, tokenizer=self._tokenizer)
@@ -180,6 +180,13 @@ class GPT2Wrapper(ModelWrapper):
                 inputs += [debiasing_prefix + input_text]
 
         inputs = self._tokenizer.batch_encode_plus(inputs, padding=True, return_tensors='pt')
+        
+        # Check if the total length exceeds 1024 tokens
+        total_length = inputs['input_ids'].shape[1] + (max_length if max_length is not None else 0)
+        if total_length > 1024:
+            print(f"Warning: Total length ({total_length}) exceeds 1024 tokens.")
+            return None, [], True  # Return flag indicating truncation was necessary
+        
         inputs['attention_mask'] = torch.flip(inputs['attention_mask'], dims=[1])
         shifts = inputs['attention_mask'].shape[-1] - inputs['attention_mask'].sum(dim=-1)
         for batch_idx in range(inputs['input_ids'].shape[0]):
@@ -197,7 +204,6 @@ class GPT2Wrapper(ModelWrapper):
 
         batch_size = outputs.sequences.shape[0] // (1 + len(debiasing_prefixes))
         outputs.sequences = outputs.sequences[:batch_size, inputs['input_ids'].shape[1]:]
-        # output_ids = outputs.sequences[:batch_size, inputs['input_ids'].shape[1]:]
         output_ids = outputs.sequences
         
         # Process scores
@@ -206,7 +212,7 @@ class GPT2Wrapper(ModelWrapper):
 
         decoded_outputs = self._tokenizer.batch_decode(output_ids, skip_special_tokens=True)
     
-        return outputs, decoded_outputs
+        return outputs, decoded_outputs, False  # False indicates no truncation was necessary
 
     def compute_loss(self, input_ids: torch.LongTensor, labels: torch.LongTensor) -> torch.Tensor:
         outputs = self._model(input_ids, labels=labels)
