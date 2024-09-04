@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-model_names = ['inlp', 'sentence_debiasing', 'gpt2-tldr']
+model_names = ['inlp', 'sentence_debiasing', 'gpt2-tldr', 'instructive_debiasing', 'self_debiasing']
 output_files = {
     model_name: f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv" for model_name in model_names
     }

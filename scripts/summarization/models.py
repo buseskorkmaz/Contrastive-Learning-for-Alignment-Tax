@@ -5,21 +5,16 @@ from tqdm import tqdm
 import logging
 from datasets import load_dataset
 import torch
-from transformers import pipeline
+from transformers import pipeline, GPT2Tokenizer, AutoModelForCausalLM
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
 from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
 from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
 from src.debiasing_algorithms.self_debiasing.modeling import GPT2Wrapper
 from src.factuality_detector import FactualityDetector
 import traceback
-from transformers import (
-    GPT2Tokenizer,
-    AutoModelForCausalLM,
-)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
 
 def init_debiased_model(model_name):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -29,24 +24,18 @@ def init_debiased_model(model_name):
         mode = 'gender'
         bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
         model = SentenceDebiasGPT2LMHeadModel(tldr_model_name, bias_direction).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     elif model_name == "inlp":
         mode = 'gender'
         projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
         model = INLPGPT2LMHeadModel(tldr_model_name, projection_matrix).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     elif model_name == "instructive_debiasing":
-        mode = "debiased"
         model = AutoModelForCausalLM.from_pretrained(tldr_model_name, return_dict_in_generate=True).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     elif model_name == "self_debiasing":
-        mode = "debiased"
         model = GPT2Wrapper(tldr_model_name)
-        tokenizer = model._tokenizer
     else:
         model = AutoModelForCausalLM.from_pretrained(tldr_model_name, return_dict_in_generate=True).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     tokenizer.pad_token_id = tokenizer.eos_token_id
     
     return model, tokenizer
@@ -62,6 +51,7 @@ def generate_summaries(model, tokenizer, content, model_name):
         "The following text contains negative or hateful language targeting someone because of their identity:\n",
         "The following text contains swear words, curse words, or other obscene or profane language:\n"
     ]
+    
     if model_name == "instructive_debiasing":
         content = DEBIASING_PREFIX + ' ' + content        
    
@@ -71,14 +61,14 @@ def generate_summaries(model, tokenizer, content, model_name):
     max_len = input_ids.shape[-1] + 128
 
     if isinstance(model, GPT2Wrapper): 
-        outputs = model.generate_self_debiasing(
+        _, output_str, _ = model.generate_self_debiasing(
                 input_texts=[content],
                 debiasing_prefixes=sd_debiasing_prefixes,
-                max_length=len(model._tokenizer.encode(content, truncation=True, max_length=max_length-512)) + 128,
+                max_length=len(tokenizer.encode(content, truncation=True, max_length=max_length-512)) + 128,
                 num_return_sequences=1,
                 top_k=1
             )
-        output_str = outputs[1][0]
+        output_str = output_str[0]
     else:
         outputs = model.generate(input_ids, top_k=1, max_length=max_len, num_return_sequences=1,
                                 output_scores=True, return_dict_in_generate=True)
@@ -89,8 +79,8 @@ def generate_summaries(model, tokenizer, content, model_name):
         gen_sequences = gen_sequences.cpu().numpy()
 
         output_str = tokenizer.decode(gen_sequences, skip_special_tokens=True)
-        output_str = output_str.strip()
-
+    
+    output_str = output_str.strip()
     return output_str
 
 def prepare_dataset():
@@ -106,7 +96,7 @@ def evaluate_faithfulness(original_summaries, generated_summaries):
     factuality_detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
     factuality_scores = []
     for source, target in zip(original_summaries, generated_summaries):
-        if source is None or target is None:  # Skip None summaries
+        if source is None or target is None:
             factuality_scores.append(None)
             continue
         try:
@@ -124,8 +114,8 @@ def evaluate_faithfulness(original_summaries, generated_summaries):
 
 def main():
     dataset = prepare_dataset()
-    model_names = ["sentence_debiasing", "inlp", "gpt2-tldr"]
-                #    "instructive_debiasing", "self_debiasing", "original", "gpt2-tldr"]
+    # model_names = ["sentence_debiasing", "inlp", "instructive_debiasing", "self_debiasing", "original", "gpt2-tldr"]
+    model_names = ["self_debiasing"]
     results = {model: {'content': [], 'original_summary': [], 'generated_summary': []} for model in model_names}
 
     for model_name in model_names:
@@ -149,24 +139,19 @@ def main():
                 results[model_name]['original_summary'].append(original_summary)
                 results[model_name]['generated_summary'].append(generated_summary)
 
-                if i % 10 == 0:  # Log every 10 items
+                if i % 10 == 0:
                     logger.info(f"Sample {i} - Original Summary: {original_summary[:100]}...")
                     logger.info(f"Sample {i} - Generated Summary: {generated_summary[:100]}...")
 
-                # if i >= 9:  # Process only 100 items for demonstration
-                #     break
         except Exception as e:
-            logger.info(f"Skipping model {model_name} due to")
+            logger.info(f"Skipping model {model_name} due to error")
             print(f"Error type: {type(e).__name__}")
             print(f"Error message: {str(e)}")
             print("Traceback:")
             traceback.print_exc()
 
-            df = pd.DataFrame(results[model_name])
-            df.to_csv(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/{model_name}_generations_partial.csv", index=False)
-
-    df = pd.DataFrame(results[model_name])
-    df.to_csv(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/{model_name}_generations_no_scores.csv", index=False)
+        df = pd.DataFrame(results[model_name])
+        df.to_csv(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/{model_name}_generations_no_scores.csv", index=False)
 
     # Evaluate toxicity
     for model_name in tqdm(model_names, desc="Evaluating toxicity"):
