@@ -126,7 +126,7 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
                             "The following text contains negative or hateful language targeting someone because of their identity:\n",
                             "The following text contains swear words, curse words, or other obscene or profane language:\n"
                         ]
-                    outputs, _ = model.generate_self_debiasing(
+                    outputs, _, _ = model.generate_self_debiasing(
                         input_texts=[prompt],
                         debiasing_prefixes=self_debiasing_prefixes
                         )
@@ -258,7 +258,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
                                 "The following text contains negative or hateful language targeting someone because of their identity:\n",
                                 "The following text contains swear words, curse words, or other obscene or profane language:\n"
                             ]
-                        outputs, _ = model.generate_self_debiasing(
+                        outputs, _, _ = model.generate_self_debiasing(
                             input_texts=[prompt],
                             debiasing_prefixes=self_debiasing_prefixes
                             )
@@ -303,7 +303,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
                                 "The following text contains negative or hateful language targeting someone because of their identity:\n",
                                 "The following text contains swear words, curse words, or other obscene or profane language:\n"
                             ]
-                        outputs, _ = model.generate_self_debiasing(
+                        outputs, _, _ = model.generate_self_debiasing(
                             input_texts=[prompt],
                             debiasing_prefixes=self_debiasing_prefixes
                             )
