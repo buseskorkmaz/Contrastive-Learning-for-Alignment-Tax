@@ -1,6 +1,6 @@
 import argparse
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, GPT2Tokenizer, RobertaTokenizer, RobertaForSequenceClassification
+from transformers import AutoModelForCausalLM, AutoTokenizer, GPT2Tokenizer, RobertaTokenizer, RobertaForSequenceClassification, LlamaTokenizer
 from datasets import load_dataset
 from tqdm import tqdm
 import os
@@ -17,6 +17,8 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
 from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
 from src.debiasing_algorithms.self_debiasing.modeling import GPT2Wrapper
+from src.debiasing_algorithms.cda.models import CDAModel
+from src.debiasing_algorithms.dropout.models import DropoutModel
 
 DEBIASING_PREFIX = "Be positive, polite, respectful, compliant, loveable, modest, helpful, and kind for: "
 
@@ -24,27 +26,52 @@ def load_model_and_tokenizer(model_name, device):
     if model_name == "gpt2":
         model = AutoModelForCausalLM.from_pretrained('gpt2').to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-    elif model_name == "sentence_debiasing":
-        mode = 'gender'
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
-        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-    elif model_name == "inlp":
-        mode = 'gender'
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
-        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif model_name == "llama2-7b":
+        model = AutoModelForCausalLM.from_pretrained('meta-llama/Llama-2-7b-hf').to(device)
+        tokenizer = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-hf', legacy=False)
+    elif model_name == "phi2":
+        model = AutoModelForCausalLM.from_pretrained('microsoft/phi-2').to(device)
+        tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
     elif model_name == "instructive_debiasing":
         model = AutoModelForCausalLM.from_pretrained('gpt2').to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
     elif model_name == "self_debiasing":
         wrapper = GPT2Wrapper(model_name='gpt2')
         model = wrapper
         tokenizer = wrapper._tokenizer
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "sentence_debiasing" in model_name:
+        mode = model_name.split('-')[1]
+        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "inlp" in model_name:
+        mode = model_name.split('-')[1] 
+        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "cda" in model_name:
+        base_model_name = model_name.split('_')[0]
+        mode = model_name.split('_')[2]
+        cda_model = CDAModel(base_model_name=base_model_name, mode=mode)
+        model = cda_model.model.to(device)
+        tokenizer = cda_model.tokenizer
+        if base_model_name =='gpt2':
+            tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "dropout" in model_name:
+        base_model_name = model_name.split('_')[0]
+        dropout_model = DropoutModel(base_model_name=base_model_name)
+        model = dropout_model.model.to(device)
+        tokenizer = dropout_model.tokenizer
+        if base_model_name =='gpt2':
+            tokenizer.pad_token_id = tokenizer.eos_token_id
     else:
         raise ValueError(f"Unknown model: {model_name}")
     
-    tokenizer.pad_token_id = tokenizer.eos_token_id
     return model, tokenizer
 
 def format_instructive_debias_prompt(prompt):
@@ -165,7 +192,7 @@ def main(args):
         print(f"Detailed results for {model_name} logged to: {log_filepath}")
 
     # Write summary to CSV
-    summary_filepath = os.path.join(args.save_dir, 'toxicity_results_summary.csv')
+    summary_filepath = os.path.join(args.save_dir, 'toxicity_results_summary_base_llama2-7b.csv')
     with open(summary_filepath, 'w', newline='') as csvfile:
         fieldnames = ['model', 'average_toxicity']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -182,8 +209,11 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output")
-    parser.add_argument("--models", "-m", nargs="+", default=['sentence_debiasing', 'inlp', 'instructive_debiasing', 'self_debiasing'],
-                        choices=['gpt2', 'sentence_debiasing', 'inlp', 'instructive_debiasing', 'self_debiasing'])
+    parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_base")
+    parser.add_argument("--models", "-m", nargs="+", default=['llama2-7b'],
+                        choices=['gpt2', 'sentence_debiasing-gender', 'sentence_debiasing-race', 'inlp-gender', 'inlp-race', 'instructive_debiasing', 
+                   'self_debiasing', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'llama2-7b_cda_gender',
+                   'llama2-7b_cda_race', 'llama2-7b_cda_religion', 'phi2_cda_gender', 'phi2_cda_race', 'phi2_cda_religion', 
+                   'gpt2_dropout', 'phi2_dropout', 'llama2-7b-dropout','phi2', 'llama2-7b'])
     args = parser.parse_args()
     main(args)
