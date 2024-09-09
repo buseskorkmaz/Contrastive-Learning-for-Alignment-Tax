@@ -192,7 +192,7 @@ def main(args):
         print(f"Detailed results for {model_name} logged to: {log_filepath}")
 
     # Write summary to CSV
-    summary_filepath = os.path.join(args.save_dir, 'toxicity_results_summary_base_llama2-7b.csv')
+    summary_filepath = os.path.join(args.save_dir, 'toxicity_results_summary_dropout.csv')
     with open(summary_filepath, 'w', newline='') as csvfile:
         fieldnames = ['model', 'average_toxicity']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -209,11 +209,11 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_base")
-    parser.add_argument("--models", "-m", nargs="+", default=['llama2-7b'],
+    parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_dropout")
+    parser.add_argument("--models", "-m", nargs="+", default=['llama2-7b_dropout'],
                         choices=['gpt2', 'sentence_debiasing-gender', 'sentence_debiasing-race', 'inlp-gender', 'inlp-race', 'instructive_debiasing', 
                    'self_debiasing', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'llama2-7b_cda_gender',
                    'llama2-7b_cda_race', 'llama2-7b_cda_religion', 'phi2_cda_gender', 'phi2_cda_race', 'phi2_cda_religion', 
-                   'gpt2_dropout', 'phi2_dropout', 'llama2-7b-dropout','phi2', 'llama2-7b'])
+                   'gpt2_dropout', 'phi2_dropout', 'llama2-7b_dropout','phi2', 'llama2-7b'])
     args = parser.parse_args()
     main(args)
