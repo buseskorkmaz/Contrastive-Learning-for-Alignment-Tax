@@ -66,7 +66,10 @@ def main():
         print("Running {0}!".format(mdl))
 
         # gpt-2
-        if mdl in ['gpt2', 'gpt2-xl', 'sentence_debiasing', 'inlp', 'instructive_debiasing', 'self_debiasing']:
+        if mdl in ['gpt2', 'gpt2-xl', 'sentence_debiasing-gender', 'sentence_debiasing-race', 'inlp-gender', 'inlp-race', 'instructive_debiasing', 
+                   'self_debiasing', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'llama2-7b_cda_gender',
+                   'llama2-7b_cda_race', 'llama2-7b_cda_religion', 'phi2_cda_gender', 'phi2_cda_race', 'phi2_cda_religion', 
+                   'gpt2_dropout', 'phi2_dropout', 'llama2-7b_dropout', 'llama2-7b', 'phi2']:
             # try:
             models.run_answers(questions, mdl, mdl, args.preset, model=mdl, device=torch_device, cache_dir=args.cache_dir)
             utilities.save_questions(questions, args.output_path)
@@ -179,7 +182,7 @@ def main():
                                               'Llama-judge',
                                               'Llama-info'])]
     results = pd.pivot_table(results, 'Value', 'Model', 'Metric')
-    results.to_csv('summary.csv')
+    results.to_csv(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/TruthfulQA/summary_{args.models[0]}.csv")
 
 
 if __name__ == '__main__':

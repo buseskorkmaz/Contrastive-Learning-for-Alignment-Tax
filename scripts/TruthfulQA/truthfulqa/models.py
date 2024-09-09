@@ -9,7 +9,8 @@ from utilities import (
 )
 from configs import BEST_COL, ANSWER_COL, INCORRECT_COL
 from transformers import AutoModelForCausalLM, AutoTokenizer, \
-    T5ForConditionalGeneration, GPTNeoForCausalLM, AutoConfig, GPT2Tokenizer, GPT2LMHeadModel
+    T5ForConditionalGeneration, GPTNeoForCausalLM, AutoConfig, GPT2Tokenizer, GPT2LMHeadModel, \
+    LlamaTokenizer
 import torch
 # import openai
 import numpy as np
@@ -22,7 +23,8 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
 from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
 from src.debiasing_algorithms.self_debiasing.modeling import GPT2Wrapper
-
+from src.debiasing_algorithms.cda.models import CDAModel
+from src.debiasing_algorithms.dropout.models import DropoutModel
 
 def run_UnifQA(frame, engine, tag, preset='qa', verbose=False, device=None, cache_dir=None):
 
@@ -76,18 +78,12 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
         model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif model == "sentence_debiasing":
-        mode = 'gender'
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
-        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif model == "inlp":
-        mode = 'gender'
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
-        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif model == "llama2-7b":
+        model = AutoModelForCausalLM.from_pretrained('meta-llama/Llama-2-7b-hf', return_dict_in_generate=True).to(device)
+        tokenizer = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-hf', legacy=False)
+    elif model == "phi2":
+        model = AutoModelForCausalLM.from_pretrained('microsoft/phi-2', return_dict_in_generate=True).to(device)
+        tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
     elif model == "instructive_debiasing":
         model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
@@ -97,6 +93,33 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
         wrapper = GPT2Wrapper(model_name='gpt2')
         model = wrapper._model
         tokenizer = wrapper._tokenizer
+    elif "sentence_debiasing" in model:
+        mode = model.split('-')[1]
+        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "inlp" in model:
+        mode = model.split('-')[1] 
+        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "cda" in model:
+        base_model_name = model.split('_')[0]
+        mode = model.split('_')[2]
+        cda_model = CDAModel(base_model_name=base_model_name, mode=mode)
+        model = cda_model.model.to(device)
+        tokenizer = cda_model.tokenizer
+        if base_model_name =='gpt2':
+            tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "dropout" in model:
+        base_model_name = model.split('_')[0]
+        dropout_model = DropoutModel(base_model_name=base_model_name)
+        model = dropout_model.model.to(device)
+        tokenizer = dropout_model.tokenizer
+        if base_model_name =='gpt2':
+            tokenizer.pad_token_id = tokenizer.eos_token_id
     if tokenizer is None:
         tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -185,18 +208,12 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
         model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif model == "sentence_debiasing":
-        mode = 'gender'
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
-        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif model == "inlp":
-        mode = 'gender'
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
-        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif model == "llama2-7b":
+        model = AutoModelForCausalLM.from_pretrained('meta-llama/Llama-2-7b-hf', return_dict_in_generate=True).to(device)
+        tokenizer = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-hf', legacy=False)
+    elif model == "phi2":
+        model = AutoModelForCausalLM.from_pretrained('microsoft/phi-2', return_dict_in_generate=True).to(device)
+        tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
     elif model == "instructive_debiasing":
         model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
@@ -206,6 +223,33 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
         wrapper = GPT2Wrapper(model_name='gpt2')
         model = wrapper._model
         tokenizer = wrapper._tokenizer
+    elif "sentence_debiasing" in model:
+        mode = model.split('-')[1]
+        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "inlp" in model:
+        mode = model.split('-')[1] 
+        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "cda" in model:
+        base_model_name = model.split('_')[0]
+        mode = model.split('_')[2]
+        cda_model = CDAModel(base_model_name=base_model_name, mode=mode)
+        model = cda_model.model.to(device)
+        tokenizer = cda_model.tokenizer
+        if base_model_name =='gpt2':
+            tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "dropout" in model:
+        base_model_name = model.split('_')[0]
+        dropout_model = DropoutModel(base_model_name=base_model_name)
+        model = dropout_model.model.to(device)
+        tokenizer = dropout_model.tokenizer
+        if base_model_name =='gpt2':
+            tokenizer.pad_token_id = tokenizer.eos_token_id
     if tokenizer is None:
         tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
         tokenizer.pad_token_id = tokenizer.eos_token_id
