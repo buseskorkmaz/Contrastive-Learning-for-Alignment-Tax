@@ -1,19 +1,13 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, GPT2Tokenizer, LlamaTokenizer
 
 
-class CDAGPT2Model:
-    def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained(f"ao9000/gpt2-dropout")
-        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/gpt2-dropout")
-
-class CDALlama2Model:
-    def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained(f"ao9000/llama2-7b-dropout")
-        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/llama2-7b-dropout")
-
-
-class CDAPhi2Model:
-    def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained(f"ao9000/phi2-dropout")
-        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/phi2-dropout")
+class DropoutModel:
+    def __init__(self, base_model_name):
+        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/{base_model_name}-dropout")
+        if base_model_name == 'gpt2':
+            self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        elif base_model_name == 'llama2-7b':
+            self.tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", legacy=False)
+        elif base_model_name == 'phi2':
+            self.tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
     

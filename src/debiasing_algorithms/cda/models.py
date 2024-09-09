@@ -1,19 +1,12 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, GPT2Tokenizer, AutoTokenizer, LlamaTokenizer
 
 
-class CDAGPT2Model:
-    def __init__(self, mode):
-        self.tokenizer = AutoTokenizer.from_pretrained(f"ao9000/gpt2-cda-{mode}")
-        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/gpt2-cda-{mode}")
-
-class CDALlama2Model:
-    def __init__(self, mode):
-        self.tokenizer = AutoTokenizer.from_pretrained(f"ao9000/llama2-7b-cda-{mode}")
-        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/llama2-7b-cda-{mode}")
-
-
-class CDAPhi2Model:
-    def __init__(self, mode):
-        self.tokenizer = AutoTokenizer.from_pretrained(f"ao9000/phi2-cda-{mode}")
-        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/phi2-cda-{mode}")
-    
+class CDAModel:
+    def __init__(self, base_model_name, mode):
+        self.model = AutoModelForCausalLM.from_pretrained(f"ao9000/{base_model_name}-cda-{mode}")
+        if base_model_name == 'gpt2':
+            self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        elif base_model_name == 'llama2-7b':
+            self.tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", legacy=False)
+        elif base_model_name == 'phi2':
+            self.tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
