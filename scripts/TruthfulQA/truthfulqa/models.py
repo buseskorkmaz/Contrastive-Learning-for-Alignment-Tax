@@ -8,9 +8,7 @@ from utilities import (
     format_prompt_with_answer_strings_instructive_debias,
 )
 from configs import BEST_COL, ANSWER_COL, INCORRECT_COL
-from transformers import AutoModelForCausalLM, AutoTokenizer, \
-    T5ForConditionalGeneration, GPTNeoForCausalLM, AutoConfig, GPT2Tokenizer, GPT2LMHeadModel, \
-    LlamaTokenizer
+from transformers import AutoTokenizer, T5ForConditionalGeneration
 import torch
 # import openai
 import numpy as np
@@ -18,50 +16,12 @@ import pandas as pd
 import warnings
 import os
 import sys
-import math
+# import math
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../'))
-from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
-from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
-from src.debiasing_algorithms.self_debiasing.modeling import GPT2Wrapper
-from src.debiasing_algorithms.cda.models import CDAModel
-from src.debiasing_algorithms.dropout.models import DropoutModel
+from scripts.seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
+from scripts.summarization.models import init_debiased_model
 
-def run_UnifQA(frame, engine, tag, preset='qa', verbose=False, device=None, cache_dir=None):
-
-    """Stores answers from HuggingFace UnifiedQA-based models"""
-
-    if tag not in frame.columns:
-        frame[tag] = ''
-
-    frame[tag].fillna('', inplace=True)
-    frame[tag] = frame[tag].astype(str)
-
-    model = T5ForConditionalGeneration.from_pretrained(engine, cache_dir=cache_dir).to(device)
-    model.eval()
-    tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
-
-    for idx in frame.index:
-        if pd.isnull(frame.loc[idx, tag]) or not len(frame.loc[idx, tag]):
-            prompt = format_prompt(frame.loc[idx], preset, format='UQA')  # don't include question preset
-            if prompt is not None:
-                input_ids = tokenizer(prompt, return_tensors='pt').input_ids.to(device)
-                output_ids = model.generate(input_ids, top_k=1)[0]
-                response = tokenizer.decode(output_ids, skip_special_tokens=True)
-
-                if verbose:
-                    print("MODEL ANSWER: {0}".format(response))
-
-                frame.loc[idx, tag] = response
-            else:
-                frame.loc[idx, tag] = ''
-
-    if device:
-        torch.cuda.empty_cache()
-
-    return frame
-
-
-def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=True, device=None, cache_dir=None):
+def run_answers(frame, engine, tag, preset, model_name=None, tokenizer=None, verbose=True, device=None, cache_dir=None):
 
     """Stores answers from autoregressive HF models (GPT-2, GPT-Neo)"""
 
@@ -70,59 +30,8 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
 
     frame[tag] = frame[tag].fillna('')
     frame[tag] = frame[tag].astype(str)
-    instructive_debiasing_prompt = False
-    if model is None:
-        model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
-        model.eval()
-    if model == "gpt2":
-        model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif model == "llama2-7b":
-        model = AutoModelForCausalLM.from_pretrained('meta-llama/Llama-2-7b-hf', return_dict_in_generate=True).to(device)
-        tokenizer = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-hf', legacy=False)
-    elif model == "phi2":
-        model = AutoModelForCausalLM.from_pretrained('microsoft/phi-2', return_dict_in_generate=True).to(device)
-        tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
-    elif model == "instructive_debiasing":
-        model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-        instructive_debiasing_prompt = True
-    elif model == "self_debiasing":
-        wrapper = GPT2Wrapper(model_name='gpt2')
-        model = wrapper._model
-        tokenizer = wrapper._tokenizer
-    elif "sentence_debiasing" in model:
-        mode = model.split('-')[1]
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
-        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif "inlp" in model:
-        mode = model.split('-')[1] 
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
-        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif "cda" in model:
-        base_model_name = model.split('_')[0]
-        mode = model.split('_')[2]
-        cda_model = CDAModel(base_model_name=base_model_name, mode=mode)
-        model = cda_model.model.to(device)
-        tokenizer = cda_model.tokenizer
-        if base_model_name =='gpt2':
-            tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif "dropout" in model:
-        base_model_name = model.split('_')[0]
-        dropout_model = DropoutModel(base_model_name=base_model_name)
-        model = dropout_model.model.to(device)
-        tokenizer = dropout_model.tokenizer
-        if base_model_name =='gpt2':
-            tokenizer.pad_token_id = tokenizer.eos_token_id
-    if tokenizer is None:
-        tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
-        tokenizer.pad_token_id = tokenizer.eos_token_id
+    model, tokenizer = init_debiased_model(model_name)
+    instructive_debiasing_prompt = "instructive_debiasing" in model_name
 
     # get tokens for ending sequence
     seq_start = np.array(tokenizer('A:')['input_ids'])
@@ -195,64 +104,13 @@ def run_answers(frame, engine, tag, preset, model=None, tokenizer=None, verbose=
     return frame
 
 
-def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, device=None, cache_dir=None):
+def run_probs(frame, engine, tag, preset='qa', model_name=None, tokenizer=None, device=None, cache_dir=None):
 
     """Runs multiple-choice metrics for autoregressive HuggingFace models (GPT-2, GPT-Neo)"""
 
     set_columns(tag, frame)
-    instructive_debiasing_prompt = False
-    if model is None:
-        model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
-        model.eval()
-    if model == "gpt2":
-        model = AutoModelForCausalLM.from_pretrained(engine, return_dict_in_generate=True, cache_dir=cache_dir).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif model == "llama2-7b":
-        model = AutoModelForCausalLM.from_pretrained('meta-llama/Llama-2-7b-hf', return_dict_in_generate=True).to(device)
-        tokenizer = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-hf', legacy=False)
-    elif model == "phi2":
-        model = AutoModelForCausalLM.from_pretrained('microsoft/phi-2', return_dict_in_generate=True).to(device)
-        tokenizer = AutoTokenizer.from_pretrained('microsoft/phi-2')
-    elif model == "instructive_debiasing":
-        model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True, cache_dir=cache_dir).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-        instructive_debiasing_prompt = True
-    elif model == "self_debiasing":
-        wrapper = GPT2Wrapper(model_name='gpt2')
-        model = wrapper._model
-        tokenizer = wrapper._tokenizer
-    elif "sentence_debiasing" in model:
-        mode = model.split('-')[1]
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
-        model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif "inlp" in model:
-        mode = model.split('-')[1] 
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
-        model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif "cda" in model:
-        base_model_name = model.split('_')[0]
-        mode = model.split('_')[2]
-        cda_model = CDAModel(base_model_name=base_model_name, mode=mode)
-        model = cda_model.model.to(device)
-        tokenizer = cda_model.tokenizer
-        if base_model_name =='gpt2':
-            tokenizer.pad_token_id = tokenizer.eos_token_id
-    elif "dropout" in model:
-        base_model_name = model.split('_')[0]
-        dropout_model = DropoutModel(base_model_name=base_model_name)
-        model = dropout_model.model.to(device)
-        tokenizer = dropout_model.tokenizer
-        if base_model_name =='gpt2':
-            tokenizer.pad_token_id = tokenizer.eos_token_id
-    if tokenizer is None:
-        tokenizer = AutoTokenizer.from_pretrained(engine, cache_dir=cache_dir)
-        tokenizer.pad_token_id = tokenizer.eos_token_id
+    model, tokenizer = init_debiased_model(model_name)
+    instructive_debiasing_prompt = "instructive_debiasing" in model_name
         
     with torch.no_grad():
         for idx in frame.index:
@@ -293,7 +151,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
                                                                preset,
                                                                format='general')
                         
-                    if isinstance(model, GPT2Wrapper):
+                    if isinstance(model, (GPT2Wrapper, Llama2Wrapper, Phi2Wrapper)):
                         self_debiasing_prefixes = [
                                 "The following text contains rude, disrespectful, or unreasonable language:\n",
                                 "The following text contains very hateful, aggressive, disrespectful language:\n",
@@ -302,7 +160,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
                                 "The following text contains negative or hateful language targeting someone because of their identity:\n",
                                 "The following text contains swear words, curse words, or other obscene or profane language:\n"
                             ]
-                        outputs, _, _ = model.generate_self_debiasing(
+                        outputs = model.generate_self_debiasing(
                             input_texts=[prompt],
                             debiasing_prefixes=self_debiasing_prefixes
                             )
@@ -338,7 +196,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
                                                                temp_ans,
                                                                preset,
                                                                format='general')
-                    if isinstance(model, GPT2Wrapper):
+                    if isinstance(model, (GPT2Wrapper, Llama2Wrapper, Phi2Wrapper)):
                         self_debiasing_prefixes = [
                                 "The following text contains rude, disrespectful, or unreasonable language:\n",
                                 "The following text contains very hateful, aggressive, disrespectful language:\n",
@@ -347,7 +205,7 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
                                 "The following text contains negative or hateful language targeting someone because of their identity:\n",
                                 "The following text contains swear words, curse words, or other obscene or profane language:\n"
                             ]
-                        outputs, _, _ = model.generate_self_debiasing(
+                        outputs = model.generate_self_debiasing(
                             input_texts=[prompt],
                             debiasing_prefixes=self_debiasing_prefixes
                             )
@@ -375,87 +233,6 @@ def run_probs(frame, engine, tag, preset='qa', model=None, tokenizer=None, devic
         torch.cuda.empty_cache()
 
     return frame
-
-
-def run_GPTJ(frame, tag, preset='qa', device=None, cache_dir=None, check_path=None):
-
-    """Builds GPT-J from a modified GPT-Neo 2.7B checkpoint and generates answers"""
-
-    # GPT-J 6B config
-    config = AutoConfig.from_pretrained("EleutherAI/gpt-neo-2.7B")
-    config.attention_layers = ["global"] * 28
-    config.attention_types = [["global"], 28]
-    config.num_layers = 28
-    config.num_heads = 16
-    config.hidden_size = 256 * config.num_heads
-    config.vocab_size = 50400
-    config.rotary = True
-    config.rotary_dim = 64
-    config.jax = True
-
-    model = GPTNeoForCausalLM.from_pretrained(pretrained_model_name_or_path=None, config=config,
-                                              state_dict=torch.load(check_path)).to(device).eval()
-
-    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B", cache_dir=cache_dir)
-
-    seq_start = np.array(tokenizer('A:')['input_ids'])
-    seq_end = np.array(tokenizer('Q:')['input_ids'])
-
-    if tag not in frame.columns:
-        frame[tag] = ''
-
-    frame[tag].fillna('', inplace=True)
-    frame[tag] = frame[tag].astype(str)
-
-    for idx in frame.index:
-        if pd.isnull(frame.loc[idx, tag]) or not len(frame.loc[idx, tag]):
-            prompt = format_prompt(frame.loc[idx], preset, format='general')
-            if prompt is not None:
-                input_ids = tokenizer(prompt, return_tensors='pt').input_ids.to(device)
-                max_len = input_ids.shape[-1] + 50
-
-                output_ids = model.generate(input_ids, top_k=1, max_length=max_len)[0]
-                gen_sequences = output_ids[input_ids.shape[-1]:]
-                gen_arr = gen_sequences.cpu().numpy()
-                idx_start = find_subsequence(gen_arr, seq_start, start=True)
-                idx_end = find_subsequence(gen_arr, seq_end, start=False)
-
-                gen_sequences = gen_sequences[idx_start:idx_end]
-                response = tokenizer.decode(gen_sequences, skip_special_tokens=True)
-                response = response.strip()
-                print(response)
-
-                frame.loc[idx, tag] = response
-            else:
-                frame.loc[idx, tag] = ''
-
-    torch.cuda.empty_cache()
-    return frame
-
-
-def run_probs_GPTJ(frame, tag, preset='qa', device=None, cache_dir=None, check_path=None):
-
-    """Runs multiple-choice metrics for GPT-J"""
-
-    # GPT-J 6B config
-    config = AutoConfig.from_pretrained("EleutherAI/gpt-neo-2.7B")
-    config.attention_layers = ["global"] * 28
-    config.attention_types = [["global"], 28]
-    config.num_layers = 28
-    config.num_heads = 16
-    config.hidden_size = 256 * config.num_heads
-    config.vocab_size = 50400
-    config.rotary = True
-    config.rotary_dim = 64
-    config.jax = True
-
-    model = GPTNeoForCausalLM.from_pretrained(pretrained_model_name_or_path=None, config=config,
-                                              state_dict=torch.load(check_path)).to(device).eval()
-    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B", cache_dir=cache_dir)
-
-    frame = run_probs(frame, tag, tag, preset, model=model, tokenizer=tokenizer)
-    return frame
-
 
 def run_probs_T5(frame, engine, tag, preset='qa', device=None, cache_dir=None):
 
