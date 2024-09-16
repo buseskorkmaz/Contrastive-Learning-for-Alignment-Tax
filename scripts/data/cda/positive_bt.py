@@ -2,6 +2,8 @@ import os
 import torch
 from transformers import MarianMTModel, MarianTokenizer
 from difflib import SequenceMatcher
+import argparse
+from tqdm import tqdm
 
 def load_translation_models():
     model_names = {
@@ -46,7 +48,7 @@ def augment_data(source_lines, target_lines, models, tokenizers, device, num_aug
     augmented_target_lines = []
     languages = ['fr', 'de', 'es']
     
-    for source, target in zip(source_lines, target_lines):
+    for source, target in tqdm(zip(source_lines, target_lines), total=len(source_lines), desc="Augmenting data"):
         augmented_source_lines.append(source.strip())
         augmented_target_lines.append(target.strip())
         
@@ -71,6 +73,7 @@ def process_files(input_folder, output_folder, models, tokenizers, device, num_a
         source_file = os.path.join(input_folder, f'{subset}.source')
         target_file = os.path.join(input_folder, f'{subset}.target')
         
+        print(f"Processing {subset} data...")
         with open(source_file, 'r', encoding='utf-8') as src_file, open(target_file, 'r', encoding='utf-8') as tgt_file:
             source_lines = src_file.readlines()
             target_lines = tgt_file.readlines()
@@ -83,20 +86,23 @@ def process_files(input_folder, output_folder, models, tokenizers, device, num_a
         augmented_source_file = os.path.join(output_folder, f'{subset}.source')
         augmented_target_file = os.path.join(output_folder, f'{subset}.target')
         
+        print(f"Saving augmented {subset} data...")
         with open(augmented_source_file, 'w', encoding='utf-8') as aug_src_file, open(augmented_target_file, 'w', encoding='utf-8') as aug_tgt_file:
-            for src, tgt in zip(augmented_source_lines, augmented_target_lines):
+            for src, tgt in tqdm(zip(augmented_source_lines, augmented_target_lines), total=len(augmented_source_lines), desc=f"Writing {subset} files"):
                 aug_src_file.write(f"{src}\n")
                 aug_tgt_file.write(f"{tgt}\n")
         
         print(f"Augmented {subset} data saved to {augmented_source_file} and {augmented_target_file}")
 
-def main():
-    input_folder = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/pos'
-    output_folder = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/pos_bt_fr'
-    num_augmentations = 3  # Number of augmented examples to generate per original example
+def main(args):
+    input_folder = args.input_dir
+    output_folder = args.output_dir
+    num_augmentations = args.num_augmentations
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {device}")
     
+    print("Loading translation models...")
     models, tokenizers = load_translation_models()
     for model in models.values():
         model.to(device)
@@ -106,4 +112,10 @@ def main():
     print("Augmentation complete.")
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Data augmentation using back-translation")
+    parser.add_argument("--input_dir", type=str, required=True, help="Input directory containing source and target files")
+    parser.add_argument("--output_dir", type=str, required=True, help="Output directory for augmented files")
+    parser.add_argument("--num_augmentations", type=int, default=3, help="Number of augmented examples to generate per original example")
+    
+    args = parser.parse_args()
+    main(args)
