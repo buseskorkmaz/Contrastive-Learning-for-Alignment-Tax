@@ -173,11 +173,11 @@ def process_data(input_dir, output_dir, strategies, model, tokenizer, device):
 def main():
     parser = argparse.ArgumentParser(description="Negative data augmentation with GPT-2")
     parser.add_argument('--input_dir', help="Input directory containing source, target, and other files", 
-                        default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/neg")
+                        default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg")
     parser.add_argument('--output_dir', help="Output directory for augmented data", 
-                        default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/neg_processed")
-    parser.add_argument('--model_name', default='openai-community/gpt2-xl', help="Hugging Face model name")
-    parser.add_argument('--strategies', nargs='+', default=['masked_regen'],
+                        default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg_processed")
+    parser.add_argument('--model_name', default='gpt2', help="Hugging Face model name")
+    parser.add_argument('--strategies', nargs='+', default=['entity_swap', 'low_confidence'],
                         choices=['entity_swap', 'low_confidence', 'masked_regen'],
                         help="Augmentation strategies to apply")
     parser.add_argument('--topk', type=int, default=5, help="Top k predictions for masked regeneration")
