@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 # from src.factuality_detector import FactualityDetector
 import re
 import torch
+from transformers import pipeline
 
 def combine_data(data_list):
     combined = {split: {'source': [], 'target': []} for split in ['train', 'validation', 'test']}
@@ -56,3 +57,17 @@ def read_files(directory, logger):
         }
     logger.info(f"Loaded data from {directory}")
     return data
+
+def evaluate_toxicity(text):
+    toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=0 if torch.cuda.is_available() else -1)
+    results = toxicity_model(text, batch_size=1, truncation=True, max_length=512)
+    return results[0]['score']
+
+def calculate_original_toxicity(data):
+    total_toxicity_score = 0
+    num_samples = 0
+    for target in data['target']:
+        toxicity_score = evaluate_toxicity(target)
+        total_toxicity_score += toxicity_score
+        num_samples += 1
+    return total_toxicity_score / num_samples
