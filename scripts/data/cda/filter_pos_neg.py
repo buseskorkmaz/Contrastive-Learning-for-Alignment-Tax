@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
+import re
 
 # Your existing code to load and process data
 models = ['original', 'gpt2', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'gpt2_dropout',
@@ -27,18 +28,27 @@ def process_and_save_data(data, data_type):
     
     # Function to save data
     def save_split(split_data, split_name):
+        # Function to clean and format text
+        def clean_text(text):
+            # Replace newlines and multiple spaces with a single space
+            text = re.sub(r'\s+', ' ', text)
+            # Remove code blocks
+            text = re.sub(r'```[\s\S]*?```', '', text)
+            return text.strip()
+
         # Prepare source data
-        split_data['source'] = split_data['content'].str.replace('\n', ' ')
-        split_data['generated_summary'] = split_data['generated_summary'].str.replace('\n', ' ')
+        split_data['source'] = split_data['content'].apply(clean_text)
+        split_data['generated_summary'] = split_data['generated_summary'].apply(clean_text)
+
         # Save source data
         with open(os.path.join(base_dir, f"{split_name}.source"), 'w', encoding='utf-8') as f:
             for line in split_data['source']:
-                f.write(line.strip() + '\n')
+                f.write(line + '\n')
         
         # Save target data
         with open(os.path.join(base_dir, f"{split_name}.target"), 'w', encoding='utf-8') as f:
             for line in split_data['generated_summary']:
-                f.write(line.strip() + '\n')
+                f.write(line + '\n')
     
     # Save data for each split
     save_split(train_data, 'train')
