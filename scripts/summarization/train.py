@@ -82,7 +82,7 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs,
             "val_factuality_score": val_factuality,
             "val_toxicity": val_toxicity,
             "val_factuality_improvement": val_factuality - original_val_factuality,
-            "val_toxicity_improvement": val_toxicity - original_val_toxicity,
+            "val_toxicity_improvement": original_val_toxicity - val_toxicity,
         })
 
         # Report metrics together
@@ -92,28 +92,28 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs,
         logger.info(f"Val Factuality Score: {val_factuality:.4f}")
         logger.info(f"Val Toxicity Score: {val_toxicity:.4f}")
         logger.info(f"Val Factuality Improvement: {val_factuality - original_val_factuality:.4f}")
-        logger.info(f"Val Toxicity Improvement: {val_toxicity - original_val_toxicity:.4f}")
+        logger.info(f"Val Toxicity Improvement: {original_val_toxicity - val_toxicity:.4f}")
         logger.info("---")
 
     # Final evaluation
-    final_val_loss, final_val_contrastive_loss, final_val_ce_loss, final_val_factuality, final_val_toxicity = evaluate_w_toxicity(model, tokenizer, val_loader, device, logger)
+    final_val_loss, final_val_contrastive_loss, final_val_ce_loss, final_val_factuality, final_val_toxicity = evaluate_w_toxicity(model, tokenizer, val_loader, device, factuality_detector, logger)
     logger.info("Final Validation Results:")
     logger.info(f"Loss: {final_val_loss:.4f}, Contrastive Loss: {final_val_contrastive_loss:.4f}, CE Loss: {final_val_ce_loss:.4f}")
     logger.info(f"Factuality Score: {final_val_factuality:.4f}")
     logger.info(f"Factuality Improvement: {final_val_factuality - original_val_factuality:.4f}")
     logger.info(f"Toxicity Score: {final_val_toxicity:.4f}")
-    logger.info(f"Toxicity Improvement: {final_val_toxicity - original_val_toxicity:.4f}")
+    logger.info(f"Toxicity Improvement: {original_val_toxicity - final_val_toxicity:.4f}")
 
 def main():
     logger.info("Starting main function...")
     parser = argparse.ArgumentParser()
-    parser.add_argument('--pos_data', nargs='+', choices=['original', 'bt_fr', 'all'], default=['original'], help='Positive data options')
+    parser.add_argument('--pos_data', nargs='+', choices=['original', 'bt', 'all'], default=['original'], help='Positive data options')
     parser.add_argument('--neg_data', nargs='+', choices=['original', 'entity_swap', 'low_confidence', 'all'], default=['original'], help='Negative data options')
     parser.add_argument('--model_name', type=str, default='gpt2', help='Model to train')
     args = parser.parse_args()
 
     # Process 'all' option
-    all_pos_options = ['original', 'bt_fr']
+    all_pos_options = ['original', 'bt']
     all_neg_options = ['original', 'entity_swap', 'low_confidence']
     
     if 'all' in args.pos_data:
@@ -141,6 +141,8 @@ def main():
     # Combine data from all specified paths
     pos_data = combine_data([read_files(path, logger) for path in pos_data_paths])
     neg_data = combine_data([read_files(path, logger) for path in neg_data_paths])
+    # to not use neg augmented files in test so keep high the benchmark
+    neg_test_data = combine_data([read_files('/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg', logger)])
 
     # diversity_evaluator = None
     factuality_detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
@@ -183,9 +185,9 @@ def main():
     logger.info(f"Initialized model: {model_name}")
 
     neg_samples_per_pos = 5  # You can adjust this number
-    train_dataset = ContrastiveDataset(pos_data['train'], neg_data['train'], tokenizer, max_length=256, neg_samples_per_pos=neg_samples_per_pos)
-    val_dataset = ContrastiveDataset(pos_data['validation'], neg_data['validation'], tokenizer, max_length=256, neg_samples_per_pos=neg_samples_per_pos)
-    test_dataset = ContrastiveDataset(pos_data['test'], neg_data['test'], tokenizer, max_length=256, neg_samples_per_pos=neg_samples_per_pos)
+    train_dataset = ContrastiveDataset(pos_data['train'], neg_data['train'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
+    val_dataset = ContrastiveDataset(pos_data['validation'], neg_test_data['validation'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
+    test_dataset = ContrastiveDataset(pos_data['test'], neg_test_data['test'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
     logger.info("Created datasets")
 
     train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)  # batch_size is 1 because each item already contains multiple negatives
@@ -200,7 +202,7 @@ def main():
 
     wandb.init(
         project='factual-bias-mitigation-scripts_tldr_train',
-        name=f"{model_name}-{args.pos_data}-{args.neg_data}",
+        name=f"{model_name}-{'_'.join(args.pos_data)}-{'_'.join(args.neg_data)}",
     )
 
     wandb.config.update({
@@ -239,11 +241,11 @@ def main():
 
     # Create config dictionary
     config = {
-        "ce_weight": 16,
+        "ce_weight": 1.5,
         "model_name": model_name,
         "batch_size": 4,
         "learning_rate": 1e-5,
-        "epochs": 15,
+        "epochs": 10,
         "neg_samples_per_pos": neg_samples_per_pos,
         "pos_data_option": args.pos_data,
         "neg_data_option": args.neg_data,
@@ -265,7 +267,7 @@ def main():
     logger.info(f"Final Test Factuality Score: {test_factuality:.4f}")
     logger.info(f"Final Test Toxicity Score: {test_toxicity:.4f}")
     logger.info(f"Test Factuality Improvement: {test_factuality - original_test_factuality:.4f}")
-    logger.info(f"Test Toxicity Improvement: {test_toxicity - original_test_toxicity:.4f}")
+    logger.info(f"Test Toxicity Improvement: {original_test_toxicity - test_toxicity:.4f}")
 
     # Log test metrics
     wandb.log({
@@ -275,7 +277,7 @@ def main():
         "test_factuality_score": test_factuality,
         "test_toxicity_score": test_toxicity,
         "test_factuality_improvement": test_factuality - original_test_factuality,
-        "test_toxicity_improvement": test_toxicity - original_test_toxicity,
+        "test_toxicity_improvement": original_test_toxicity - test_toxicity,
     })
 
     # Finish the wandb run
