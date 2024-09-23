@@ -16,7 +16,10 @@ from src.contrastive_learning.train_utils import(
     evaluate_w_toxicity,
 )
 from src.contrastive_learning.model import ContrastiveJobDescriptionModel
-from src.contrastive_learning.dataset import ContrastiveDataset
+from src.contrastive_learning.dataset import (
+    ContrastiveDataset, 
+    EvaluationDataset,
+)
 from src.factuality_detector import FactualityDetector
 from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel 
 from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
@@ -148,16 +151,6 @@ def main():
     factuality_detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
     logger.info("Initialized Diversity_Evaluator and FactualityDetector")
 
-    logger.info("Calculating original factuality scores...")
-    original_val_factuality = calculate_original_factuality(pos_data['validation'], factuality_detector)
-    original_test_factuality = calculate_original_factuality(pos_data['test'], factuality_detector)
-    original_val_toxicity = calculate_original_toxicity(pos_data['validation'])
-    original_test_toxicity = calculate_original_toxicity(pos_data['test'])
-    logger.info(f"Original Validation Factuality Score: {original_val_factuality:.4f}")
-    logger.info(f"Original Test Factuality Score: {original_test_factuality:.4f}")
-    logger.info(f"Original Validation Toxicity Score: {original_val_toxicity:.4f}")
-    logger.info(f"Original Test Toxicity Score: {original_test_toxicity:.4f}")
-
     model_name = args.model_name
 
     if "sentence-debiasing" in model_name:
@@ -185,9 +178,53 @@ def main():
     logger.info(f"Initialized model: {model_name}")
 
     neg_samples_per_pos = 5  # You can adjust this number
+    # Initialize datasets
     train_dataset = ContrastiveDataset(pos_data['train'], neg_data['train'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
-    val_dataset = ContrastiveDataset(pos_data['validation'], neg_test_data['validation'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
-    test_dataset = ContrastiveDataset(pos_data['test'], neg_test_data['test'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
+    
+    val_dataset = EvaluationDataset(
+        pos_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/validation/pos',
+        neg_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/validation/neg',
+        tokenizer=tokenizer,
+        max_length=512,
+        seed=42
+    )
+    
+    test_dataset = EvaluationDataset(
+        pos_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/test/pos',
+        neg_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/test/neg',
+        tokenizer=tokenizer,
+        max_length=512,
+        seed=42
+    )
+
+    logger.info("Calculating original factuality scores...")
+    logger.info("Calculating pos factuality scores...")
+    pos_original_val_factuality = calculate_original_factuality(val_dataset.pos_data, factuality_detector)
+    pos_original_test_factuality = calculate_original_factuality(test_dataset.pos_data, factuality_detector)
+    logger.info("Calculating neg factuality scores...")
+    neg_original_val_factuality = calculate_original_factuality(val_dataset.neg_data, factuality_detector)
+    neg_original_test_factuality = calculate_original_factuality(test_dataset.neg_data, factuality_detector)
+    original_val_factuality = ((pos_original_val_factuality * len(val_dataset.pos_data['source'])) + (neg_original_val_factuality * len(val_dataset.neg_data['source']))) / len(val_dataset)
+    original_test_factuality = ((pos_original_test_factuality * len(test_dataset.pos_data['source'])) + (neg_original_test_factuality * len(test_dataset.neg_data['source']))) / len(test_dataset)
+    logger.info("Calculating original toxicity scores...")
+    logger.info("Calculating pos toxicity scores...")
+    pos_original_val_toxicity = calculate_original_toxicity(val_dataset.pos_data)
+    pos_original_test_toxicity = calculate_original_toxicity(test_dataset.pos_data)
+    logger.info("Calculating neg toxicity scores...")
+    neg_original_val_toxicity = calculate_original_toxicity(val_dataset.neg_data)
+    neg_original_test_toxicity = calculate_original_toxicity(test_dataset.neg_data)
+    original_val_toxicity = ((pos_original_val_toxicity * len(val_dataset.pos_data['source'])) + (neg_original_val_toxicity * len(val_dataset.neg_data['source']))) / len(val_dataset)
+    original_test_toxicity = ((pos_original_test_toxicity * len(test_dataset.pos_data['source'])) + (neg_original_test_toxicity * len(test_dataset.neg_data['source']))) / len(test_dataset)
+
+    logger.info(f"Original Validation Factuality Score: {original_val_factuality:.4f}")
+    logger.info(f"Original Test Factuality Score: {original_test_factuality:.4f}")
+    logger.info(f"Original Validation Toxicity Score: {original_val_toxicity:.4f}")
+    logger.info(f"Original Test Toxicity Score: {original_test_toxicity:.4f}")
+
+    # Create DataLoaders
+    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=4)
+    test_loader = DataLoader(test_dataset, batch_size=4)
     logger.info("Created datasets")
 
     train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)  # batch_size is 1 because each item already contains multiple negatives
