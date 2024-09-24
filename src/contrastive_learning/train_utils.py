@@ -11,18 +11,39 @@ def preprocess_text(text):
     return cleaned_text.strip().lower()
 
 def combined_loss(pos_embeddings, neg_embeddings, logits, targets, contrastive_weight=1, ce_weight=16, temperature=0.7):
-    # Contrastive loss
-    batch_size, num_negatives = neg_embeddings.shape
-    pos_embeddings = pos_embeddings.unsqueeze(1).expand(-1, num_negatives, -1)
-    similarity_matrix = torch.sum(pos_embeddings * neg_embeddings, dim=-1) / temperature
+    batch_size = pos_embeddings.shape[0]
+    embedding_dim = pos_embeddings.shape[1]
+
+    # Adjust for neg_embeddings
+    if neg_embeddings.dim() == 2:
+        # Only one negative per sample
+        num_negatives = 1
+        neg_embeddings = neg_embeddings.unsqueeze(1)  # Shape: [batch_size, 1, embedding_dim]
+    else:
+        num_negatives = neg_embeddings.shape[1]
+    
+    print(f"pos_embeddings.shape: {pos_embeddings.shape}")
+    print(f"neg_embeddings.shape: {neg_embeddings.shape}")
+    print(f"batch_size: {batch_size}")
+    print(f"num_negatives: {num_negatives}")
+    print(f"embedding_dim: {embedding_dim}")
+    
+    # Expand pos_embeddings to match neg_embeddings
+    pos_embeddings_expanded = pos_embeddings.unsqueeze(1).expand(-1, num_negatives, -1)
+    
+    # Compute similarity matrix
+    similarity_matrix = torch.sum(pos_embeddings_expanded * neg_embeddings, dim=-1) / temperature
     labels = torch.zeros(batch_size, dtype=torch.long, device=pos_embeddings.device)
     contrastive_loss_value = torch.nn.functional.cross_entropy(similarity_matrix, labels)
-
+    
     # Cross-entropy loss for language modeling
     shift_logits = logits[..., :-1, :].contiguous()
     shift_labels = targets[..., 1:].contiguous()
-    ce_loss_value = torch.nn.functional.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
-
+    ce_loss_value = torch.nn.functional.cross_entropy(
+        shift_logits.view(-1, shift_logits.size(-1)), 
+        shift_labels.view(-1)
+    )
+    
     # Combined loss
     loss = contrastive_weight * contrastive_loss_value + ce_weight * ce_loss_value
     return loss, contrastive_weight * contrastive_loss_value, ce_weight * ce_loss_value
