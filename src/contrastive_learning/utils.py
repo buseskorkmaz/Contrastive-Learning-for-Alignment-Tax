@@ -9,9 +9,12 @@ from transformers import pipeline
 def combine_data(data_list):
     combined = {split: {'source': [], 'target': []} for split in ['train', 'validation', 'test']}
     for data in data_list:
-        for split in ['train', 'validation', 'test']:
-            combined[split]['source'].extend(data[split]['source'])
-            combined[split]['target'].extend(data[split]['target'])
+        try:
+            for split in ['train', 'validation', 'test']:
+                combined[split]['source'].extend(data[split]['source'])
+                combined[split]['target'].extend(data[split]['target'])
+        except:
+            print(f"skipping {split}, couldn't find")
     return combined
 
 def print_gpu_memory(epoch):
@@ -50,12 +53,15 @@ def calculate_original_fairness(data, fairness_evaluator):
 
 def read_files(directory, logger):
     data = {}
-    for split in ['train', 'validation', 'test']:
-        data[split] = {
-            'source': open(os.path.join(directory, f'{split}.source'), 'r').readlines(),
-            'target': open(os.path.join(directory, f'{split}.target'), 'r').readlines(),
-        }
-    logger.info(f"Loaded data from {directory}")
+    for split in ['train']:
+        try:
+            data[split] = {
+                'source': open(os.path.join(directory, f'{split}.source'), 'r').readlines(),
+                'target': open(os.path.join(directory, f'{split}.target'), 'r').readlines(),
+            }
+            logger.info(f"Loaded data from {directory}")
+        except:
+            logger.info(f"Couldn't find {directory}")
     return data
 
 def evaluate_toxicity(text):
