@@ -51,12 +51,24 @@ def main():
                 'model': model_name,
                 'average_toxicity': avg_toxicity
             })
+    
+    output_dir = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_instructive_debiasing'
+    target_date = '20240911'
 
+    for filename in os.listdir(output_dir):
+        if filename.endswith('.jsonl') and target_date in filename:
+            model_name = filename.split('_results_')[0]
+            file_path = os.path.join(output_dir, filename)
+            avg_toxicity = process_jsonl_file(file_path)
+            results.append({
+                'model': model_name,
+                'average_toxicity': avg_toxicity
+            })
 
     # Create DataFrame and save to CSV
     df = pd.DataFrame(results)
     df = df.sort_values('average_toxicity')
-    output_file = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output/toxicity_results_summary_20240904.csv'
+    output_file = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output/toxicity_results_summary_20240911.csv'
     df.to_csv(output_file, index=False)
     print(f"Summary saved to {output_file}")
 

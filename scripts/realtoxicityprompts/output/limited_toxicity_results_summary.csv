@@ -1,0 +1,6 @@
+model,average_toxicity
+sentence_debiasing-gender,0.029091489917772075
+inlp-gender,0.019566965200775787
+instructive_debiasing,0.012773910895699373
+self_debiasing,0.0008745968583449818
+gpt2,0.005360530541770762

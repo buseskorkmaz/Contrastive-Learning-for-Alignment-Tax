@@ -155,12 +155,13 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_instructive_debiasing")
-    parser.add_argument("--models", "-m", nargs="+", default=['instructive_debiasing-llama2', 'instructive_debiasing-phi2'],
+    parser.add_argument("--models", "-m", nargs="+", default=['instructive_debiasing-phi2', 'self_debiasing-phi2'],
                         choices=[
                             'gpt2', 'sentence_debiasing-gender', 'sentence_debiasing-race', 'inlp-gender', 'inlp-race', 
                             'instructive_debiasing-gpt2', 'instructive_debiasing-llama2', 'instructive_debiasing-phi2', 
-                            'self_debiasing', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'llama2-7b_cda_gender',
+                            'self_debiasing-gpt2', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'llama2-7b_cda_gender',
                             'llama2-7b_cda_race', 'llama2-7b_cda_religion', 'phi2_cda_gender', 'phi2_cda_race', 'phi2_cda_religion', 
-                            'gpt2_dropout', 'phi2_dropout', 'llama2-7b_dropout','phi2', 'llama2-7b'])
+                            'gpt2_dropout', 'phi2_dropout', 'llama2-7b_dropout','phi2', 'llama2-7b',
+                            'self_debiasing-phi2', 'self_debiasing-llama2'])
     args = parser.parse_args()
     main(args)
