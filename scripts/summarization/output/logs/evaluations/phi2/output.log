@@ -1,0 +1,51 @@
+IndexError in SummaC for source: Every boss has crit damage, find it. Shoot it. Red... and target: ...
+IndexError in SummaC for source: Lots'a water. Me did kinda good.... and target: ...
+IndexError in SummaC for source: show deets: 
+Wednesday, June 8th, 7:30
+Creative Al... and target: ...
+IndexError in SummaC for source: By breaking your work down into tiny pieces that y... and target: ...
+IndexError in SummaC for source: play safe, never take risks, keep buying items, do... and target: ...
+IndexError in SummaC for source: Hide eggs in their rooms.... and target: ...
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc451.pok.ibm.com>
+Subject: Job 7948: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name phi2> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name phi2> was submitted from host <cccxl012> by user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:38:06 2024
+Job was executed on host(s) <4*cccxc451>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:38:08 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Mon Sep  9 17:38:08 2024
+Terminated at Mon Sep  9 20:20:22 2024
+Results reported at Mon Sep  9 20:20:22 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name phi2
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   9695.54 sec.
+    Max Memory :                                 10071 MB
+    Average Memory :                             1015.31 MB
+    Total Requested Memory :                     45056.00 MB
+    Delta Memory :                               34985.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   9733 sec.
+    Turnaround time :                            9736 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/logs/phi2/error.log> for stderr output of this job.
+

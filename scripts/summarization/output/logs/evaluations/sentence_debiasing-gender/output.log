@@ -1,0 +1,43 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc434.pok.ibm.com>
+Subject: Job 7804: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name sentence_debiasing-gender> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name sentence_debiasing-gender> was submitted from host <cccxl012> by user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:00:52 2024
+Job was executed on host(s) <4*cccxc434>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:00:54 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Mon Sep  9 17:00:54 2024
+Terminated at Mon Sep  9 18:02:06 2024
+Results reported at Mon Sep  9 18:02:06 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name sentence_debiasing-gender
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   3645.05 sec.
+    Max Memory :                                 2434 MB
+    Average Memory :                             934.05 MB
+    Total Requested Memory :                     45056.00 MB
+    Delta Memory :                               42622.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                18
+    Run time :                                   3670 sec.
+    Turnaround time :                            3674 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/logs/sentence_debiasing-gender/error.log> for stderr output of this job.
+

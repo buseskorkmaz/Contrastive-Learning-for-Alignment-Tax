@@ -1,0 +1,73 @@
+Faithfulness of inlp:0.06666002248956533 +- 0.1461360901389166
+Original toxicity of inlp:0.15890450718057886 +- 0.3113157980137422
+Generated toxicity of inlp:0.09091720535726439 +- 0.23531510571745495
+----------------------------------------------------------------------------------------------------
+
+
+Faithfulness of sentence_debiasing:0.05444754516092288 +- 0.10334475788887898
+Original toxicity of sentence_debiasing:0.15890450718057886 +- 0.3113157980137422
+Generated toxicity of sentence_debiasing:0.16480335498315982 +- 0.3029340777984556
+----------------------------------------------------------------------------------------------------
+
+
+Faithfulness of gpt2-tldr:0.0653091360495574 +- 0.15988520237312615
+Original toxicity of gpt2-tldr:0.15890450718057886 +- 0.3113157980137422
+Generated toxicity of gpt2-tldr:0.07736390298857194 +- 0.22079210453393147
+----------------------------------------------------------------------------------------------------
+
+
+Faithfulness of instructive_debiasing:0.060992101677596736 +- 0.14810346397526866
+Original toxicity of instructive_debiasing:0.15890450718057886 +- 0.3113157980137422
+Generated toxicity of instructive_debiasing:0.07265221401344749 +- 0.22026900085210177
+----------------------------------------------------------------------------------------------------
+
+
+Faithfulness of self_debiasing:0.018721921866666668 +- 0.01062044883135523
+Original toxicity of self_debiasing:0.0897645962540991 +- 0.13813839331431435
+Generated toxicity of self_debiasing:0.07342289199975004 +- 0.17707502893428304
+----------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc419.pok.ibm.com>
+Subject: Job 4846588: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/analysis.py> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/analysis.py> was submitted from host <cccxl012> by user <busekorkmaz> in cluster <cccCluster> at Tue Sep  3 06:10:28 2024
+Job was executed on host(s) <4*cccxc419>, in queue <x86_1h>, as user <busekorkmaz> in cluster <cccCluster> at Tue Sep  3 06:10:29 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Tue Sep  3 06:10:29 2024
+Terminated at Tue Sep  3 06:10:33 2024
+Results reported at Tue Sep  3 06:10:33 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/analysis.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   1.41 sec.
+    Max Memory :                                 17 MB
+    Average Memory :                             17.00 MB
+    Total Requested Memory :                     22528.00 MB
+    Delta Memory :                               22511.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   4 sec.
+    Turnaround time :                            5 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/logs/analysis/error.log> for stderr output of this job.
+

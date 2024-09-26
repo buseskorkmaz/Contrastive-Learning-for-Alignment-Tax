@@ -1,0 +1,2710 @@
+skipping validation, couldn't find
+skipping validation, couldn't find
+skipping validation, couldn't find
+skipping validation, couldn't find
+skipping validation, couldn't find
+Epoch 0: GPU memory allocated: 22.17 GB
+GPU memory reserved: 31.85 GB
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 5, 256])
+batch_size: 4
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([3, 256])
+neg_embeddings.shape: torch.Size([3, 5, 256])
+batch_size: 3
+num_negatives: 5
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 1, 256])
+batch_size: 4
+num_negatives: 1
+embedding_dim: 256
+pos_embeddings.shape: torch.Size([4, 256])
+neg_embeddings.shape: torch.Size([4, 1, 256])
+batch_size: 4
+num_negatives: 1
+embedding_dim: 256
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc549.pok.ibm.com>
+Subject: Job 265031: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/train.py --pos_data all --neg_data low_confidence> in cluster <cccCluster> Exited
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/train.py --pos_data all --neg_data low_confidence> was submitted from host <cccxl011> by user <busekorkmaz> in cluster <cccCluster> at Tue Sep 24 05:51:01 2024
+Job was executed on host(s) <4*cccxc549>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Tue Sep 24 06:06:43 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Tue Sep 24 06:06:43 2024
+Terminated at Tue Sep 24 06:44:53 2024
+Results reported at Tue Sep 24 06:44:53 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/train.py --pos_data all --neg_data low_confidence
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   1901.13 sec.
+    Max Memory :                                 2333 MB
+    Average Memory :                             1237.94 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               87779.00 MB
+    Max Swap :                                   -
+    Max Processes :                              5
+    Max Threads :                                55
+    Run time :                                   2169 sec.
+    Turnaround time :                            3232 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/logs/train/pos_all_neg_low_confidence/error.log> for stderr output of this job.
+

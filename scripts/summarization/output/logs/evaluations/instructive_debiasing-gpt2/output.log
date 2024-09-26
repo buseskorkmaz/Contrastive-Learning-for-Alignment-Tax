@@ -1,0 +1,49 @@
+IndexError in SummaC for source: when you fart underwater, it's like your butt hole... and target: ...
+IndexError in SummaC for source: I own a t440s with mint 16, everything works smoot... and target: ...
+IndexError in SummaC for source: Cloud competition with prizes once we hit 500 subs... and target: ...
+IndexError in SummaC for source: Have some fun (and earn $$) playing the dollar mar... and target: ...
+IndexError in SummaC for source: 3d artist for hire specializing in models from scr... and target: ...
+IndexError in SummaC for source: Kassadin rework with no mana and a new mechanic ca... and target: ...
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc443.pok.ibm.com>
+Subject: Job 7788: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name instructive_debiasing-gpt2> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name instructive_debiasing-gpt2> was submitted from host <cccxl012> by user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:00:51 2024
+Job was executed on host(s) <4*cccxc443>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:00:51 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Mon Sep  9 17:00:51 2024
+Terminated at Mon Sep  9 17:49:18 2024
+Results reported at Mon Sep  9 17:49:18 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name instructive_debiasing-gpt2
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   2888.31 sec.
+    Max Memory :                                 1597 MB
+    Average Memory :                             901.44 MB
+    Total Requested Memory :                     45056.00 MB
+    Delta Memory :                               43459.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                18
+    Run time :                                   2907 sec.
+    Turnaround time :                            2907 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/logs/instructive_debiasing-gpt2/error.log> for stderr output of this job.
+

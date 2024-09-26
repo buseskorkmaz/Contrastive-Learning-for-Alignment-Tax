@@ -1,0 +1,49 @@
+IndexError in SummaC for source: Please buff underplayed supports instead of nerfin... and target: ...
+IndexError in SummaC for source: I'm sick of meeting new people and finding out if ... and target: ...
+IndexError in SummaC for source: Cloud competition with prizes once we hit 500 subs... and target: ...
+IndexError in SummaC for source: Still in love with my ex from 8 years ago.... and target: ...
+IndexError in SummaC for source: 3d artist for hire specializing in models from scr... and target: ...
+IndexError in SummaC for source: Game updated, now requires premium. I lost progres... and target: ...
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc451.pok.ibm.com>
+Subject: Job 7801: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name inlp-race> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name inlp-race> was submitted from host <cccxl012> by user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:00:52 2024
+Job was executed on host(s) <4*cccxc451>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Mon Sep  9 17:00:52 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Mon Sep  9 17:00:52 2024
+Terminated at Mon Sep  9 17:59:12 2024
+Results reported at Mon Sep  9 17:59:12 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name inlp-race
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   3484.21 sec.
+    Max Memory :                                 2393 MB
+    Average Memory :                             946.76 MB
+    Total Requested Memory :                     45056.00 MB
+    Delta Memory :                               42663.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                18
+    Run time :                                   3499 sec.
+    Turnaround time :                            3500 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/logs/inlp-race/error.log> for stderr output of this job.
+

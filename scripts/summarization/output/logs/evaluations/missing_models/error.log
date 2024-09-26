@@ -1,0 +1,38 @@
+2024-09-03 05:50:17.053363: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-09-03 05:50:17.563614: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:485] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-09-03 05:50:17.794781: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:8454] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-09-03 05:50:17.849023: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1452] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-09-03 05:50:18.186315: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-09-03 05:50:22.338872: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2024-09-03 05:50:36,201 - INFO - Processing model: self_debiasing
+/u/busekorkmaz/.conda/envs/fms_at_work/lib/python3.10/site-packages/transformers/models/gpt2/modeling_gpt2.py:1202: FutureWarning: `GPT2LMHeadModel.parallelize` is deprecated and will be removed in v5 of Transformers, you should load your model with `device_map='balanced'` in the call to `from_pretrained`. You can also provide your own `device_map` but it needs to be a dictionary module_name to device, so for instance {'transformer.h.0': 0, 'transformer.h.1': 1, ...}
+  warnings.warn(
+/u/busekorkmaz/.conda/envs/fms_at_work/lib/python3.10/site-packages/transformers/models/gpt2/modeling_gpt2.py:916: FutureWarning: `GPT2Model.parallelize` is deprecated and will be removed in v5 of Transformers, you should load your model with `device_map='balanced'` in the call to `from_pretrained`. You can also provide your own `device_map` but it needs to be a dictionary module_name to device, so for instance {'h.0': 0, 'h.1': 1, ...}
+  warnings.warn(
+Processing self_debiasing:   0%|          | 0/3000 [00:00<?, ?it/s]/u/busekorkmaz/.conda/envs/fms_at_work/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:589: UserWarning: `do_sample` is set to `False`. However, `top_k` is set to `1` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_k`.
+  warnings.warn(
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+2024-09-03 05:50:49,310 - INFO - Sample 0 - Original Summary: Wanted to emulate guitar player from a band I listened to growing up....
+2024-09-03 05:50:49,310 - INFO - Sample 0 - Generated Summary: I was a little confused about how to go about learning.
+
+I was just looking for a way to learn a new...
+Processing self_debiasing:   0%|          | 1/3000 [00:04<3:53:12,  4.67s/it]Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Processing self_debiasing:   0%|          | 2/3000 [00:07<3:03:56,  3.68s/it]Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Processing self_debiasing:   0%|          | 3/3000 [00:10<2:43:48,  3.28s/it]Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Processing self_debiasing:   0%|          | 4/3000 [00:14<3:06:19,  3.73s/it]Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Processing self_debiasing:   0%|          | 5/3000 [00:18<2:57:01,  3.55s/it]Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Processing self_debiasing:   0%|          | 6/3000 [00:22<3:06:03,  3.73s/it]Processing self_debiasing:   0%|          | 6/3000 [00:22<3:04:49,  3.70s/it]
+2024-09-03 05:51:06,869 - INFO - Skipping model self_debiasing due to error
+Traceback (most recent call last):
+  File "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/models.py", line 134, in main
+    generated_summary = generate_summaries(model, tokenizer, content, model_name)
+  File "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/models.py", line 71, in generate_summaries
+    output_str = output_str[0]
+IndexError: list index out of range
+Evaluating toxicity:   0%|          | 0/1 [00:00<?, ?it/s]2024-09-03 05:51:06,889 - INFO - Evaluating toxicity for model: self_debiasing
+Evaluating toxicity: 100%|██████████| 1/1 [00:03<00:00,  3.49s/it]Evaluating toxicity: 100%|██████████| 1/1 [00:03<00:00,  3.49s/it]
+Evaluating faithfulness:   0%|          | 0/1 [00:00<?, ?it/s]2024-09-03 05:51:10,379 - INFO - Evaluating faithfulness for model: self_debiasing
+Evaluating faithfulness: 100%|██████████| 1/1 [00:05<00:00,  5.68s/it]Evaluating faithfulness: 100%|██████████| 1/1 [00:05<00:00,  5.68s/it]
+2024-09-03 05:51:16,063 - INFO - Results for self_debiasing saved to self_debiasing_results.csv
+2024-09-03 05:51:16,063 - INFO - Evaluation complete. Results saved to CSV files.

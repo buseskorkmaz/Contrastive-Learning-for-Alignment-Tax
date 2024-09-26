@@ -55,10 +55,26 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs,
         for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}"):
             optimizer.zero_grad()
             
-            pos_embeddings, pos_logits = model(batch['pos_combined_ids'].to(device), batch['pos_combined_attention_mask'].to(device))
-            neg_embeddings, _ = model(batch['neg_combined_ids'].to(device), batch['neg_combined_attention_mask'].to(device))
+            # Positive samples
+            pos_embeddings, pos_logits = model(
+                batch['pos_combined_ids'].to(device), 
+                batch['pos_combined_attention_mask'].to(device)
+            )
             
-            loss, contrastive_loss, ce_loss = combined_loss(pos_embeddings, neg_embeddings, pos_logits, batch['pos_target_ids'].to(device))
+            # Negative samples
+            batch_size, num_negatives, seq_length = batch['neg_combined_ids'].shape
+            neg_ids = batch['neg_combined_ids'].view(-1, seq_length).to(device)
+            neg_attention_mask = batch['neg_combined_attention_mask'].view(-1, seq_length).to(device)
+            neg_embeddings, _ = model(neg_ids, neg_attention_mask)
+            
+            # Reshape neg_embeddings to (batch_size, num_negatives, embedding_dim)
+            embedding_dim = neg_embeddings.shape[-1]
+            neg_embeddings = neg_embeddings.view(batch_size, num_negatives, embedding_dim)
+            
+            # Calculate loss
+            loss, contrastive_loss, ce_loss = combined_loss(
+                pos_embeddings, neg_embeddings, pos_logits, batch['pos_target_ids'].to(device)
+            )            
             loss.backward()
             optimizer.step()
             
