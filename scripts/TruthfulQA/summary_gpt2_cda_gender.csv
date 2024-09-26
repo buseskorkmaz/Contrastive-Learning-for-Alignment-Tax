@@ -1,0 +1,2 @@
+Model,Llama-info,Llama-judge,MC1,MC2,bleu acc,rouge1 acc
+gpt2_cda_gender,0.5625,0.5,0.2252141982864137,0.4178164010385628,0.1875,0.3125
