@@ -17,13 +17,13 @@ from scripts.seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper,
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
 
-def get_model_max_length(model, tokenizer):
-    if isinstance(model, GPT2LMHeadModel) or isinstance(tokenizer, GPT2Tokenizer):
-        return 1024
-    elif hasattr(model.config, 'max_position_embeddings'):
-        return model.config.max_position_embeddings
+def get_model_max_length(model_name):
+    if 'phi2' in model_name:
+        return 2047
+    if 'llama2' in model_name:
+        return 4095
     else:
-        return 4096  # Default fallback
+        return 1023  # Default fallback
 
 
 choices = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
@@ -101,7 +101,7 @@ def batch_inference(model, tokenizer, inference_batch, model_name):
     device = next(model.parameters()).device
     outputs = []
     
-    max_length = get_model_max_length(model, tokenizer)
+    max_length = get_model_max_length(model_name)
     max_new_tokens = min(2048, max_length // 2)  # Adjust max_new_tokens based on model's max length
     
     for prompt in tqdm(inference_batch, desc="Batch inference"):
@@ -121,7 +121,7 @@ def batch_inference(model, tokenizer, inference_batch, model_name):
             output = model.generate_self_debiasing(
                 input_texts=[prompt],
                 debiasing_prefixes=self_debiasing_prefixes,
-                max_length=min(input_ids.shape[-1] + max_new_tokens, max_length),
+                max_new_tokens=max_new_tokens,  # Use max_new_tokens instead of max_length
                 num_return_sequences=1,
             )
             generated_text = output
@@ -129,16 +129,16 @@ def batch_inference(model, tokenizer, inference_batch, model_name):
             output = model.generate(
                 input_ids,
                 attention_mask=attention_mask,
-                max_length=min(input_ids.shape[-1] + max_new_tokens, max_length),
+                max_new_tokens=max_new_tokens,  # Use max_new_tokens instead of max_length
                 num_return_sequences=1,
                 output_scores=True,
                 return_dict_in_generate=True
             )
             generated_text = tokenizer.decode(output.sequences[0], skip_special_tokens=True)
+        
         outputs.append(generated_text)
     
     return outputs
-
 def save_res(res, output_path):
     accu, corr, wrong = 0.0, 0.0, 0.0
     with open(output_path, "w") as fo:
@@ -162,55 +162,96 @@ def save_res(res, output_path):
     return accu, corr, wrong
 
 @torch.no_grad()
+def eval_cot(subject, model, tokenizer, val_df, test_df, output_path):
+    llm, sampling_params = model
+    global choices
+    logging.info("evaluating " + subject)
+    inference_batches = []
+
+    for i in tqdm(range(len(test_df))):
+        k = args.ntrain
+        curr = test_df[i]
+        prompt_length_ok = False
+        prompt = None
+        while not prompt_length_ok:
+            prompt = generate_cot_prompt(val_df, curr, k)
+            inputs = tokenizer(prompt, return_tensors="pt")
+            inputs = {key: value.cuda() for key, value in inputs.items()}
+            length = len(inputs["input_ids"][0])
+            if length < max_model_length - max_new_tokens:
+                prompt_length_ok = True
+            k -= 1
+        inference_batches.append(prompt)
+
+    pred_batch, response_batch = batch_inference(llm, sampling_params, inference_batches)
+    res = []
+    for j, curr in enumerate(test_df):
+        curr["pred"] = pred_batch[j]
+        curr["model_outputs"] = response_batch[j]
+        res.append(curr)
+    accu, corr, wrong = save_res(res, output_path)
+    logging.info("this batch accu is: {}, corr: {}, wrong: {}\n".format(str(accu), str(corr), str(wrong)))
+
+    accu, corr, wrong = save_res(res, output_path)
+    return accu, corr, wrong
+
+@torch.no_grad()
 def eval_cot(subject, model, tokenizer, val_df, test_df, output_path, model_name):
     logging.info(f"Evaluating {subject}")
     inference_batches = []
+    skipped_prompts = 0
 
-    max_length = get_model_max_length(model, tokenizer)
+    max_length = get_model_max_length(model_name)
     max_new_tokens = min(2048, max_length // 2)
 
-    for curr_idx, curr in enumerate(tqdm(test_df, desc=f"Preparing prompts for {subject}")):
+    for i, curr in enumerate(tqdm(test_df, desc=f"Preparing prompts for {subject}")):
         k = args.ntrain
         prompt_length_ok = False
-        attempts = 0
-        while not prompt_length_ok and attempts < 10:  # Add a maximum number of attempts
+        prompt = None
+        while not prompt_length_ok and k > 0:
             prompt = generate_cot_prompt(val_df, curr, k, model_name)
             inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_length)
-            prompt_length = len(inputs["input_ids"][0])
-            logging.info(f"Prompt {curr_idx}: length = {prompt_length}, k = {k}")
-            if prompt_length < max_length - max_new_tokens:
+            length = len(inputs["input_ids"][0])
+            logging.info(f"Prompt {i}: length = {length}, k = {k}, max_length = {max_length}")
+            if length < max_length - max_new_tokens:
                 prompt_length_ok = True
             else:
                 k -= 1
-                attempts += 1
 
-        if not prompt_length_ok:
-            logging.warning(f"Could not create a short enough prompt for item {curr_idx}. Using the last attempt.")
+        if prompt_length_ok:
+            inference_batches.append(prompt)
+        else:
+            logging.warning(f"Skipping prompt {i} due to excessive length even with k=0")
+            skipped_prompts += 1
 
-        inference_batches.append(prompt)
+        if i % 50 == 0:
+            logging.info(f"Processed {i+1}/{len(test_df)} prompts. Skipped so far: {skipped_prompts}")
 
-        # Log progress every 50 items
-        if curr_idx % 50 == 0:
-            logging.info(f"Processed {curr_idx} / {len(test_df)} items")
-
-    logging.info("Starting batch inference")
-    response_batch = batch_inference(model, tokenizer, inference_batches, model_name)
+    logging.info(f"Total skipped prompts: {skipped_prompts}")
+    logging.info(f"Starting batch inference for {len(inference_batches)} prompts")
+    
+    pred_batch, response_batch = batch_inference(model, tokenizer, inference_batches, model_name)
+    
     logging.info("Finished batch inference")
     
     res = []
-    for curr, response in zip(test_df, response_batch):
-        pred = extract_answer(response)
-        curr["pred"] = pred
-        curr["model_outputs"] = response
+    for j, curr in enumerate(test_df):
+        if j < len(pred_batch):
+            curr["pred"] = pred_batch[j]
+            curr["model_outputs"] = response_batch[j]
+        else:
+            curr["pred"] = None
+            curr["model_outputs"] = "Skipped due to length"
         res.append(curr)
 
     accu, corr, wrong = save_res(res, output_path)
-    logging.info(f"Accuracy for {subject}: {accu:.4f}, correct: {corr}, wrong: {wrong}")
+    logging.info(f"Accuracy for {subject}: {accu:.4f}, correct: {corr}, wrong: {wrong}, skipped: {skipped_prompts}")
     return accu, corr, wrong
+
 
 def main():
     model, tokenizer = init_debiased_model(args.model)
-    max_length = get_model_max_length(model, tokenizer)
+    max_length = get_model_max_length(model)
     logging.info(f"Using max_length of {max_length} for model {args.model}")
 
     if not os.path.exists(save_result_dir):

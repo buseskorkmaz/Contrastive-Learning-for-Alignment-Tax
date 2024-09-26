@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py", line 10, in <module>
+    from vllm import LLM, SamplingParams
+ModuleNotFoundError: No module named 'vllm'

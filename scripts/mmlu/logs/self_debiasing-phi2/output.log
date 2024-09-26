@@ -1,0 +1,43 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc552.pok.ibm.com>
+Subject: Job 249026: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py --model self_debiasing-phi2 --ntrain 0 --global_record_file eval_record_collection_self_debiasing-phi2.csv> in cluster <cccCluster> Exited
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py --model self_debiasing-phi2 --ntrain 0 --global_record_file eval_record_collection_self_debiasing-phi2.csv> was submitted from host <cccxl011> by user <busekorkmaz> in cluster <cccCluster> at Mon Sep 23 06:43:50 2024
+Job was executed on host(s) <4*cccxc552>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Mon Sep 23 06:44:45 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Mon Sep 23 06:44:45 2024
+Terminated at Mon Sep 23 06:44:48 2024
+Results reported at Mon Sep 23 06:44:48 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py --model self_debiasing-phi2 --ntrain 0 --global_record_file eval_record_collection_self_debiasing-phi2.csv
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   2.41 sec.
+    Max Memory :                                 158 MB
+    Average Memory :                             106.33 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               89954.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   2 sec.
+    Turnaround time :                            58 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/logs/self_debiasing-phi2/error.log> for stderr output of this job.
+

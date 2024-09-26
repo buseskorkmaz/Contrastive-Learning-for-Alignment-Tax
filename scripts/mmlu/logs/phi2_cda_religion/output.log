@@ -1,0 +1,47 @@
+ao9000/phi2-cda-religion
+INFO 09-24 07:10:49 llm_engine.py:100] Initializing an LLM engine (v0.4.2) with config: model='ao9000/phi2-cda-religion', speculative_config=None, tokenizer='microsoft/phi-2', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=2047, download_dir=None, load_format=LoadFormat.AUTO, tensor_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, quantization_param_path=None, device_config=cuda, decoding_config=DecodingConfig(guided_decoding_backend='outlines'), seed=0, served_model_name=ao9000/phi2-cda-religion)
+INFO 09-24 07:10:49 utils.py:660] Found nccl from library /u/busekorkmaz/.config/vllm/nccl/cu12/libnccl.so.2.18.1
+INFO 09-24 07:10:49 selector.py:27] Using FlashAttention-2 backend.
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc547>
+Subject: Job 265062: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py --model phi2_cda_religion --ntrain 2 --global_record_file eval_record_collection_phi2_cda_religion.csv> in cluster <cccCluster> Exited
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py --model phi2_cda_religion --ntrain 2 --global_record_file eval_record_collection_phi2_cda_religion.csv> was submitted from host <cccxl011> by user <busekorkmaz> in cluster <cccCluster> at Tue Sep 24 05:58:38 2024
+Job was executed on host(s) <4*cccxc547>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Tue Sep 24 07:10:44 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Tue Sep 24 07:10:44 2024
+Terminated at Tue Sep 24 07:10:51 2024
+Results reported at Tue Sep 24 07:10:51 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/evaluate_vllm.py --model phi2_cda_religion --ntrain 2 --global_record_file eval_record_collection_phi2_cda_religion.csv
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   6.14 sec.
+    Max Memory :                                 593 MB
+    Average Memory :                             396.00 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               89519.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                29
+    Run time :                                   6 sec.
+    Turnaround time :                            4333 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/logs/phi2_cda_religion/error.log> for stderr output of this job.
+
