@@ -77,3 +77,54 @@ def init_debiased_model(model_name):
         if base_model_name =='gpt2':
             tokenizer.pad_token_id = tokenizer.eos_token_id    
     return model, tokenizer
+
+def get_hf_id(model_name):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    # tldr_model_name = 'Holarissun/gpt2-sft-tldr'
+
+    if model_name == "gpt2":
+        return 'gpt2'
+    elif model_name == "llama2-7b":
+        return 'meta-llama/Llama-2-7b-hf'
+    elif model_name == "phi2":
+        return 'microsoft/phi-2' 
+    elif "instructive_debiasing" in model_name:
+        if 'gpt2' in model_name:        
+            base_model_name = 'gpt2'
+        elif 'llama' in model_name:
+            base_model_name = "meta-llama/Llama-2-7b-hf"
+        elif 'phi2' in model_name:
+            base_model_name ='microsoft/phi-2'
+        return base_model_name
+    # elif "self_debiasing" in model_name:
+    #     if 'gpt2' in model_name:        
+    #         wrapper = GPT2Wrapper(model_name='gpt2')
+    #     elif 'llama' in model_name:
+    #         wrapper = Llama2Wrapper(model_name="meta-llama/Llama-2-7b-hf")
+    #     elif 'phi2' in model_name:
+    #         wrapper = Phi2Wrapper(model_name='microsoft/phi-2')
+    #     model = wrapper._model
+    #     tokenizer = wrapper._tokenizer
+    # elif "sentence_debiasing" in model_name:
+    #     mode = model_name.split('-')[1]
+    #     bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+    #     model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
+    #     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    #     tokenizer.pad_token_id = tokenizer.eos_token_id
+    # elif "inlp" in model_name:
+    #     mode = model_name.split('-')[1] 
+    #     projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+    #     model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
+    #     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    #     tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif "cda" in model_name:
+        base_model_name = model_name.split('_')[0]
+        mode = model_name.split('_')[2]
+        model_name = f"ao9000/{base_model_name}-cda-{mode}"
+        return model_name
+    elif "dropout" in model_name:
+        base_model_name = model_name.split('_')[0]
+        model_name = f"ao9000/{base_model_name}-dropout"
+        return model_name
+    else:
+        return None
