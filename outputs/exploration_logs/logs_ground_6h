@@ -1,0 +1,166 @@
+Original DataFrame info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 369 entries, 0 to 368
+Data columns (total 35 columns):
+ #   Column               Non-Null Count  Dtype  
+---  ------               --------------  -----  
+ 0   requirement_summary  337 non-null    object 
+ 1   job_country_code     369 non-null    object 
+ 2   account_id           369 non-null    int64  
+ 3   employment_type      325 non-null    object 
+ 4   description          369 non-null    object 
+ 5   benefit_summary      273 non-null    object 
+ 6   experience           278 non-null    object 
+ 7   function             369 non-null    object 
+ 8   account_name         369 non-null    int64  
+ 9   education            242 non-null    object 
+ 10  id                   369 non-null    int64  
+ 11  industry             352 non-null    object 
+ 12  title                369 non-null    object 
+ 13  remote               369 non-null    bool   
+ 14  embedding            369 non-null    object 
+ 15  q_value              369 non-null    float64
+ 16  prompt               369 non-null    object 
+ 17  generated_text       369 non-null    object 
+ 18  evaluated_text       369 non-null    object 
+ 19  location_distance    369 non-null    float64
+ 20  sr_na                369 non-null    float64
+ 21  sr_eu                369 non-null    float64
+ 22  sr_asia              369 non-null    float64
+ 23  sr_oceania           369 non-null    float64
+ 24  sr_africa            369 non-null    float64
+ 25  sr_sa                369 non-null    float64
+ 26  sr_antarctica        369 non-null    int64  
+ 27  ir_na                369 non-null    float64
+ 28  ir_eu                369 non-null    float64
+ 29  ir_asia              369 non-null    float64
+ 30  ir_oceania           369 non-null    float64
+ 31  ir_africa            369 non-null    float64
+ 32  ir_sa                369 non-null    float64
+ 33  ir_antarctica        369 non-null    float64
+ 34  q_val                369 non-null    float64
+dtypes: bool(1), float64(16), int64(4), object(14)
+memory usage: 98.5+ KB
+None
+
+Generated DataFrame info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 369 entries, 0 to 368
+Data columns (total 35 columns):
+ #   Column               Non-Null Count  Dtype  
+---  ------               --------------  -----  
+ 0   requirement_summary  337 non-null    object 
+ 1   job_country_code     369 non-null    object 
+ 2   account_id           369 non-null    int64  
+ 3   employment_type      325 non-null    object 
+ 4   description          369 non-null    object 
+ 5   benefit_summary      273 non-null    object 
+ 6   experience           278 non-null    object 
+ 7   function             369 non-null    object 
+ 8   account_name         369 non-null    int64  
+ 9   education            242 non-null    object 
+ 10  id                   369 non-null    int64  
+ 11  industry             352 non-null    object 
+ 12  title                369 non-null    object 
+ 13  remote               369 non-null    bool   
+ 14  embedding            369 non-null    object 
+ 15  q_value              369 non-null    float64
+ 16  prompt               369 non-null    object 
+ 17  generated_text       369 non-null    object 
+ 18  evaluated_text       369 non-null    object 
+ 19  location_distance    369 non-null    float64
+ 20  sr_na                369 non-null    float64
+ 21  sr_eu                369 non-null    float64
+ 22  sr_asia              369 non-null    float64
+ 23  sr_oceania           369 non-null    float64
+ 24  sr_africa            369 non-null    float64
+ 25  sr_sa                369 non-null    float64
+ 26  sr_antarctica        369 non-null    int64  
+ 27  ir_na                369 non-null    float64
+ 28  ir_eu                369 non-null    float64
+ 29  ir_asia              369 non-null    float64
+ 30  ir_oceania           369 non-null    float64
+ 31  ir_africa            369 non-null    float64
+ 32  ir_sa                369 non-null    float64
+ 33  ir_antarctica        369 non-null    float64
+ 34  q_val                369 non-null    float64
+dtypes: bool(1), float64(16), int64(4), object(14)
+memory usage: 98.5+ KB
+None
+
+First few rows of original_df:
+                                 requirement_summary  ...      q_val
+0   university degree in computer science or rele...  ...  -3.931038
+1  bachelor's degree in accounting or related fie...  ... -10.000641
+2  qualifications consultative selling style whic...  ...  -8.572070
+3    10+ years of proven experience in a heavy cu...  ...  -3.940961
+4   degree in engineering (all streams can be mot...  ... -12.000641
+
+[5 rows x 35 columns]
+
+First few rows of generated_df:
+                                 requirement_summary  ...      q_val
+0   university degree in computer science or rele...  ...  -3.931038
+1  bachelor's degree in accounting or related fie...  ... -10.000641
+2  qualifications consultative selling style whic...  ...  -7.369532
+3    10+ years of proven experience in a heavy cu...  ...  -1.613275
+4   degree in engineering (all streams can be mot...  ...  -4.857784
+
+[5 rows x 35 columns]
+
+Preprocessing original texts...
+Preprocessing generated texts...
+Results saved to /dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/workable_sentence_level_factuality_analysis.csv
+
+Demo (First 5 Rows):
+                                       original_text  ...                     most_similar_original_sentence
+0  is a leading european cloud-based neobank, del...  ...  is a leading european cloud-based neobank, del...
+1  is a leading european cloud-based neobank, del...  ...  with presence in 24 markets, it is the payment...
+2  is a leading european cloud-based neobank, del...  ...  's mission is to change the way businesses pay...
+3  is a leading european cloud-based neobank, del...  ...  latest innovations include “tap-on-phone  pos ...
+4  is a leading european cloud-based neobank, del...  ...  an advocate of sustainable cashless economy,  ...
+
+[5 rows x 6 columns]
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc439>
+Subject: Job 3659238: <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/ground_on_original.py --print_demo> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/ground_on_original.py --print_demo> was submitted from host <cccxl010> by user <busekorkmaz> in cluster <cccCluster> at Wed Jul 17 09:25:53 2024
+Job was executed on host(s) <4*cccxc439>, in queue <x86_6h>, as user <busekorkmaz> in cluster <cccCluster> at Wed Jul 17 09:25:54 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/factual-bias-mitigation> was used as the working directory.
+Started at Wed Jul 17 09:25:54 2024
+Terminated at Wed Jul 17 09:32:05 2024
+Results reported at Wed Jul 17 09:32:05 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/ground_on_original.py --print_demo
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   332.71 sec.
+    Max Memory :                                 1312 MB
+    Average Memory :                             855.60 MB
+    Total Requested Memory :                     22528.00 MB
+    Delta Memory :                               21216.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                22
+    Run time :                                   371 sec.
+    Turnaround time :                            372 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </dccstor/autofair/busekorkmaz/factual-bias-mitigation/logs_ground> for stderr output of this job.
+
