@@ -25,8 +25,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class FactualityDetector:
     def __init__(self, modelname, max_seq_length=512):
-        self.model = AutoModelForSequenceClassification.from_pretrained(modelname)
-        self.tokenizer = AutoTokenizer.from_pretrained(modelname)
+        self.model = AutoModelForSequenceClassification.from_pretrained(modelname, subfolder='factuality_detector')
+        self.tokenizer = AutoTokenizer.from_pretrained(modelname, subfolder='factuality_detector')
         self.max_seq_length = max_seq_length
 
         self.model = self.model.to(device)

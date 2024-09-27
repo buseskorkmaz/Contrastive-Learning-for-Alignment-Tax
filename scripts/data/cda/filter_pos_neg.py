@@ -9,7 +9,7 @@ models = ['original', 'gpt2', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_reli
           'self_debiasing-gpt2', 'instructive_debiasing-gpt2', 'phi2', 'phi2_cda_gender', 'phi2_cda_religion', 'phi2_cda_race', 'phi2_dropout','self_debiasing-phi2',
           'instructive_debiasing-phi2','llama2-7b', 'llama2-7b_cda_gender', 'llama2-7b_cda_religion', 'llama2-7b_cda_race',
           'llama2-7b_dropout','self_debiasing-llama2', 'instructive_debiasing-llama2']
-files = [f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv" for model_name in models]
+files = [f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv" for model_name in models]
 
 df_list = (pd.read_csv(file) for file in files)
 df = pd.concat(df_list, ignore_index=True)
@@ -24,7 +24,7 @@ def process_and_save_data(data, data_type):
     train_data, val_data = train_test_split(train_data, test_size=0.1, random_state=42)
     
     # Define directories
-    base_dir = "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/" + data_type
+    base_dir = "/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/" + data_type
     
     # Function to save data
     def save_split(split_data, split_name):

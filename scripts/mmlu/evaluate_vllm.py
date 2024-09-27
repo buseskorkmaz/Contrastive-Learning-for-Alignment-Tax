@@ -123,7 +123,7 @@ def format_cot_example(example, including_answer=True):
 
 def generate_cot_prompt(val_df, curr, k):
     prompt = ""
-    with open(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/cot_prompt_lib/initial_prompt.txt", "r") as fi:
+    with open(f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/mmlu/cot_prompt_lib/initial_prompt.txt", "r") as fi:
         for line in fi.readlines():
             prompt += line
     subject = curr["category"]
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ntrain", "-k", type=int, default=5)
     parser.add_argument("--selected_subjects", "-sub", type=str, default="all")
-    parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/mmlu/output/results")
+    parser.add_argument("--save_dir", "-s", type=str, default="/gpfs/home/bsk18/factual-bias-mitigation/scripts/mmlu/output/results")
     parser.add_argument("--global_record_file", "-grf", type=str,
                         default="eval_record_collection.csv")
     parser.add_argument("--gpu_util", "-gu", type=str, default="0.8")

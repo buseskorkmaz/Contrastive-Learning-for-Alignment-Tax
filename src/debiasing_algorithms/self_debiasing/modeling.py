@@ -6,7 +6,7 @@ import torch
 from torch.nn import CrossEntropyLoss
 from transformers import T5Tokenizer, T5ForConditionalGeneration, GPT2Tokenizer, PreTrainedTokenizer, PreTrainedModel
 import sys
-sys.path.append('/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/self_debiasing')
+sys.path.append('/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/self_debiasing')
 from generation import SelfDebiasingGPT2LMHeadModel
 
 

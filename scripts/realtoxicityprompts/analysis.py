@@ -12,7 +12,7 @@ def process_jsonl_file(file_path):
     return sum(toxicity_scores) / len(toxicity_scores) if toxicity_scores else 0
 
 def main():
-    output_dir = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output'
+    output_dir = '/gpfs/home/bsk18/factual-bias-mitigation/scripts/realtoxicityprompts/output'
     target_date = '20240904'
     results = []
 
@@ -26,7 +26,7 @@ def main():
                 'average_toxicity': avg_toxicity
             })
     
-    output_dir = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_base'
+    output_dir = '/gpfs/home/bsk18/factual-bias-mitigation/scripts/realtoxicityprompts/output_base'
     target_date = '20240905'
 
     for filename in os.listdir(output_dir):
@@ -39,7 +39,7 @@ def main():
                 'average_toxicity': avg_toxicity
             })
 
-    output_dir = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_dropout'
+    output_dir = '/gpfs/home/bsk18/factual-bias-mitigation/scripts/realtoxicityprompts/output_dropout'
     target_date = '20240906'
 
     for filename in os.listdir(output_dir):
@@ -52,7 +52,7 @@ def main():
                 'average_toxicity': avg_toxicity
             })
     
-    output_dir = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_instructive_debiasing'
+    output_dir = '/gpfs/home/bsk18/factual-bias-mitigation/scripts/realtoxicityprompts/output_instructive_debiasing'
     target_date = '20240911'
 
     for filename in os.listdir(output_dir):
@@ -68,7 +68,7 @@ def main():
     # Create DataFrame and save to CSV
     df = pd.DataFrame(results)
     df = df.sort_values('average_toxicity')
-    output_file = '/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output/toxicity_results_summary_20240911.csv'
+    output_file = '/gpfs/home/bsk18/factual-bias-mitigation/scripts/realtoxicityprompts/output/toxicity_results_summary_20240911.csv'
     df.to_csv(output_file, index=False)
     print(f"Summary saved to {output_file}")
 

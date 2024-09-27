@@ -24,7 +24,7 @@ class AutoRefine(torch.nn.Module):
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id  # GPT-2 doesn't have a pad token by default
         self.transformer.resize_token_embeddings(len(self.tokenizer))
 
-        state_dict = torch.load('/dccstor/autofair/busekorkmaz/FMs-at-work/outputs/hackernews-bc-gpt2/model.pkl', map_location=torch.device('cuda'))
+        state_dict = torch.load('/gpfs/home/bsk18/FMs-at-work/outputs/hackernews-bc-gpt2/model.pkl', map_location=torch.device('cuda'))
         state_dict = {k.replace('model.transformer', 'transformer'): v for k, v in state_dict.items()}
         state_dict = {k.replace('model.lm_head', 'lm_head'): v for k, v in state_dict.items()}
         state_dict = remove_unexpected_keys(state_dict)

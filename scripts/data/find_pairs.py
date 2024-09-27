@@ -94,8 +94,8 @@ def process_row(row, detector):
 
 def main(args):
     # Load data
-    original_df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/hackernews_original_eval_df_with_facts.csv")
-    generated_df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/hackernews_generated_eval_df_with_facts.csv")
+    original_df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/hackernews_original_eval_df_with_facts.csv")
+    generated_df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/hackernews_generated_eval_df_with_facts.csv")
 
     # Prepare factoids_df
     factoids_df = pd.DataFrame({
@@ -128,7 +128,7 @@ def main(args):
     factoids_df['similarity_scores'] = result['similarity_scores']
 
     # Save results
-    output_file = "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/hackernews_factuality_similarity_analysis.csv"
+    output_file = "/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/hackernews_factuality_similarity_analysis.csv"
     factoids_df.to_csv(output_file, index=False)
     print(f"Results saved to {output_file}")
 

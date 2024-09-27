@@ -18,7 +18,7 @@ def safe_generate_score(detector, orig_text, gen_text, n_gram=2, n_skip=1):
 
 def main():
     # Load the data
-    df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/workable_sentence_level_factuality_analysis.csv")
+    df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/workable_sentence_level_factuality_analysis.csv")
 
     # Initialize the factuality detector
     detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
@@ -70,7 +70,7 @@ def main():
     })
 
     # Save the results
-    results_df.to_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/workable_factuality_improvement_results.csv", index=False)
+    results_df.to_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/workable_factuality_improvement_results.csv", index=False)
 
     # Print summary statistics
     print("Summary Statistics:")

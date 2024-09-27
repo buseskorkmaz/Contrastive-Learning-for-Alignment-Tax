@@ -173,9 +173,9 @@ def process_data(input_dir, output_dir, strategies, model, tokenizer, device):
 def main():
     parser = argparse.ArgumentParser(description="Negative data augmentation with GPT-2")
     parser.add_argument('--input_dir', help="Input directory containing source, target, and other files", 
-                        default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg")
+                        default="/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/neg")
     parser.add_argument('--output_dir', help="Output directory for augmented data", 
-                        default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg_processed")
+                        default="/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/neg_processed")
     parser.add_argument('--model_name', default='gpt2', help="Hugging Face model name")
     parser.add_argument('--strategies', nargs='+', default=['entity_swap', 'low_confidence'],
                         choices=['entity_swap', 'low_confidence', 'masked_regen'],

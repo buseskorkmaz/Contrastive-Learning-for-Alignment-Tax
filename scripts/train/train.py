@@ -128,15 +128,15 @@ def main():
         args.neg_data.insert(0, 'original')
 
     # Define data paths based on arguments
-    pos_data_paths = ['/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/pos']
-    neg_data_paths = ['/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/neg']
+    pos_data_paths = ['/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/pos']
+    neg_data_paths = ['/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/neg']
 
     for opt in args.pos_data:
         if opt != 'original':
-            pos_data_paths.append(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/pos_{opt}')
+            pos_data_paths.append(f'/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/pos_{opt}')
     for opt in args.neg_data:
         if opt != 'original':
-            neg_data_paths.append(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/neg_processed/{opt}')
+            neg_data_paths.append(f'/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/neg_processed/{opt}')
 
     # Combine data from all specified paths
     pos_data = combine_data([read_files(path, logger) for path in pos_data_paths])
@@ -161,11 +161,11 @@ def main():
 
     if "sentence-debiasing" in model_name:
         mode = 'gender'
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+        bias_direction = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
         model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction)
     elif "inlp" in model_name:
         mode = 'gender'
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+        projection_matrix = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
         model = INLPGPT2LMHeadModel('gpt2', projection_matrix)
     elif "autorefine" in model_name:
         # not tested yet
@@ -227,7 +227,7 @@ def main():
     )
 
     # Create directory name
-    dir_name = f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/outputs/inlp_{'_'.join(args.pos_data)}_{'_'.join(args.neg_data)}"
+    dir_name = f"/gpfs/home/bsk18/factual-bias-mitigation/outputs/inlp_{'_'.join(args.pos_data)}_{'_'.join(args.neg_data)}"
     os.makedirs(dir_name, exist_ok=True)
 
     logger.info(f"Saving fine-tuned model in directory: {dir_name}")

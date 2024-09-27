@@ -10,7 +10,7 @@ username = "buseskorkmaz"
 repo_name = "factual-bias-mitigation-models"
 
 # Path to the directory containing the models
-base_dir = "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/outputs"
+base_dir = "/gpfs/home/bsk18/factual-bias-mitigation/outputs"
 
 # List of model file extensions to upload
 model_extensions = [".pt", ".ckpt", ".bin", ".model", ".pth"]

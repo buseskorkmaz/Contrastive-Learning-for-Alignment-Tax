@@ -83,8 +83,8 @@ def process_row(row, detector):
 
 def main(args):
     # Load data
-    original_df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/workable_original_eval_df.csv")
-    generated_df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/workable_generated_eval_df.csv")
+    original_df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/workable_original_eval_df.csv")
+    generated_df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/workable_generated_eval_df.csv")
     
     # Print info about the dataframes
     print("Original DataFrame info:")
@@ -123,7 +123,7 @@ def main(args):
     output_df = pd.concat(result.tolist(), ignore_index=True)
 
     # Save results
-    output_file = "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/workable_sentence_level_factuality_analysis.csv"
+    output_file = "/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/workable_sentence_level_factuality_analysis.csv"
     output_df.to_csv(output_file, index=False)
     print(f"Results saved to {output_file}")
 

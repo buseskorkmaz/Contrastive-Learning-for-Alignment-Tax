@@ -51,13 +51,13 @@ def init_debiased_model(model_name):
         tokenizer = wrapper._tokenizer
     elif "sentence_debiasing" in model_name:
         mode = model_name.split('-')[1]
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+        bias_direction = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
         model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
     elif "inlp" in model_name:
         mode = model_name.split('-')[1] 
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+        projection_matrix = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
         model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -107,13 +107,13 @@ def get_hf_id(model_name):
     #     tokenizer = wrapper._tokenizer
     # elif "sentence_debiasing" in model_name:
     #     mode = model_name.split('-')[1]
-    #     bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+    #     bias_direction = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
     #     model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction).to(device)
     #     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     #     tokenizer.pad_token_id = tokenizer.eos_token_id
     # elif "inlp" in model_name:
     #     mode = model_name.split('-')[1] 
-    #     projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+    #     projection_matrix = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
     #     model = INLPGPT2LMHeadModel('gpt2', projection_matrix).to(device)
     #     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     #     tokenizer.pad_token_id = tokenizer.eos_token_id

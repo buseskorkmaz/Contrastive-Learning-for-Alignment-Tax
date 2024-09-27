@@ -147,35 +147,36 @@ def main():
         args.neg_data.insert(0, 'original')
 
     # Define data paths based on arguments
-    pos_data_paths = ['/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/pos']
-    neg_data_paths = ['/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg']
+    pos_data_paths = ['/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/pos']
+    neg_data_paths = ['/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/neg']
 
     for opt in args.pos_data:
         if opt != 'original':
-            pos_data_paths.append(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/pos_{opt}')
+            pos_data_paths.append(f'/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/pos_{opt}')
     for opt in args.neg_data:
         if opt != 'original':
-            neg_data_paths.append(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg_processed/{opt}')
+            neg_data_paths.append(f'/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/neg_processed/{opt}')
 
     # Combine data from all specified paths
     pos_data = combine_data([read_files(path, logger) for path in pos_data_paths])
     neg_data = combine_data([read_files(path, logger) for path in neg_data_paths])
     # to not use neg augmented files in test so keep high the benchmark
-    neg_test_data = combine_data([read_files('/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/neg', logger)])
+    neg_test_data = combine_data([read_files('/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/neg', logger)])
 
     # diversity_evaluator = None
-    factuality_detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
+    factuality_detector = FactualityDetector("buseskorkmaz/factual-bias-mitigation-models")
+    # factuality_detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
     logger.info("Initialized Diversity_Evaluator and FactualityDetector")
 
     model_name = args.model_name
 
     if "sentence-debiasing" in model_name:
         mode = 'gender'
-        bias_direction = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
+        bias_direction = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/sentence_debiasing/subspaces/subspace_m-GPT2Model_c-gpt2_t-{mode}.pt')
         model = SentenceDebiasGPT2LMHeadModel('gpt2', bias_direction)
     elif "inlp" in model_name:
         mode = 'gender'
-        projection_matrix = torch.load(f'/dccstor/autofair/busekorkmaz/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+        projection_matrix = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
         model = INLPGPT2LMHeadModel('gpt2', projection_matrix)
     elif "autorefine" in model_name:
         # not tested yet
@@ -198,16 +199,16 @@ def main():
     train_dataset = ContrastiveDataset(pos_data['train'], neg_data['train'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
     
     val_dataset = EvaluationDataset(
-        pos_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/validation/pos',
-        neg_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/validation/neg',
+        pos_data_path='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/validation/pos',
+        neg_data_path='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/validation/neg',
         tokenizer=tokenizer,
         max_length=512,
         seed=42
     )
     
     test_dataset = EvaluationDataset(
-        pos_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/test/pos',
-        neg_data_path='/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/tldr/test/neg',
+        pos_data_path='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/test/pos',
+        neg_data_path='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/test/neg',
         tokenizer=tokenizer,
         max_length=512,
         seed=42
@@ -282,7 +283,7 @@ def main():
     )
 
     # Create directory name
-    dir_name = f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/outputs/tldr/{model_name}_{'_'.join(args.pos_data)}_{'_'.join(args.neg_data)}"
+    dir_name = f"/gpfs/home/bsk18/factual-bias-mitigation/outputs/tldr/{model_name}_{'_'.join(args.pos_data)}_{'_'.join(args.neg_data)}"
     os.makedirs(dir_name, exist_ok=True)
 
     logger.info(f"Saving fine-tuned model in directory: {dir_name}")

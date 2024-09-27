@@ -78,8 +78,8 @@ def process_row(row, questeval):
 
 def main(args):
     # Load data
-    original_df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/hackernews_original_eval_df.csv")
-    generated_df = pd.read_csv("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/input_files/hackernews_generated_eval_df.csv")
+    original_df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/hackernews_original_eval_df.csv")
+    generated_df = pd.read_csv("/gpfs/home/bsk18/factual-bias-mitigation/data/input_files/hackernews_generated_eval_df.csv")
     
     # Print info about the dataframes
     print("Original DataFrame info:")
@@ -123,12 +123,12 @@ def main(args):
     output_df = pd.concat(result.tolist(), ignore_index=True)
 
     # Save results for sentence-level analysis
-    sentence_output_file = "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/hackernews_sentence_level_analysis_questeval.csv"
+    sentence_output_file = "/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/hackernews_sentence_level_analysis_questeval.csv"
     output_df.to_csv(sentence_output_file, index=False)
     print(f"Sentence-level results saved to {sentence_output_file}")
 
     # Save results for text-level analysis
-    text_output_file = "/dccstor/autofair/busekorkmaz/factual-bias-mitigation/data/output_files/hackernews_text_level_analysis_questeval.csv"
+    text_output_file = "/gpfs/home/bsk18/factual-bias-mitigation/data/output_files/hackernews_text_level_analysis_questeval.csv"
     text_level_df = input_df.copy()
     text_level_df['overall_questeval_score'] = overall_questeval_score
     text_level_df.to_csv(text_output_file, index=False)

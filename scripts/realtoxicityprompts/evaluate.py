@@ -154,7 +154,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--save_dir", "-s", type=str, default="/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/realtoxicityprompts/output_instructive_debiasing")
+    parser.add_argument("--save_dir", "-s", type=str, default="/gpfs/home/bsk18/factual-bias-mitigation/scripts/realtoxicityprompts/output_instructive_debiasing")
     parser.add_argument("--models", "-m", nargs="+", default=['instructive_debiasing-phi2', 'self_debiasing-phi2'],
                         choices=[
                             'gpt2', 'sentence_debiasing-gender', 'sentence_debiasing-race', 'inlp-gender', 'inlp-race', 

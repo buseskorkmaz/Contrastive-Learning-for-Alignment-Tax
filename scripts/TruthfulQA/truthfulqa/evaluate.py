@@ -134,7 +134,7 @@ def main():
                                               'Llama-judge',
                                               'Llama-info'])]
     results = pd.pivot_table(results, 'Value', 'Model', 'Metric')
-    results.to_csv(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/TruthfulQA/summary_{args.models[0]}.csv")
+    results.to_csv(f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/TruthfulQA/summary_{args.models[0]}.csv")
 
 
 if __name__ == '__main__':

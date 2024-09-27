@@ -14,7 +14,7 @@ parser.add_argument(
     "--persistent_dir",
     action="store",
     type=str,
-    default="/dccstor/autofair/busekorkmaz/bias-bench/",
+    default="/gpfs/home/bsk18/bias-bench/",
     help="Directory where all persistent data will be stored.",
 )
 parser.add_argument(
@@ -95,6 +95,6 @@ if __name__ == "__main__":
     # Remove any slash from file experiment_id
     experiment_id = experiment_id.replace("/", "_")
 
-    os.makedirs("/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/seat/results/seat", exist_ok=True)
-    with open(f"/dccstor/autofair/busekorkmaz/factual-bias-mitigation/scripts/seat/results/seat/{experiment_id}.json", "w") as f:
+    os.makedirs("/gpfs/home/bsk18/factual-bias-mitigation/scripts/seat/results/seat", exist_ok=True)
+    with open(f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/seat/results/seat/{experiment_id}.json", "w") as f:
         json.dump(results, f)
