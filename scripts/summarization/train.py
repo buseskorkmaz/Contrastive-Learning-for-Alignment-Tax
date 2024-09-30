@@ -10,6 +10,7 @@ from src.contrastive_learning.utils import (
     combine_data,
     calculate_original_factuality,
     calculate_original_toxicity,
+    generate_dataset_name,
 )
 from src.contrastive_learning.train_utils import(
     combined_loss,
@@ -34,13 +35,32 @@ import random
 random.seed(42)
 import wandb
 import argparse
-# import nltk
-# nltk.download('punkt')
-# logging.disable(logging.WARNING)
+from datetime import datetime
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Create a file handler
+log_dir = 'logs'  # You can change this to your desired log directory
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, f"training_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
+
+file_handler = logging.FileHandler(log_file)
+file_handler.setLevel(logging.INFO)
+
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Optionally, add a console handler if you want to log to both file and console
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs, factuality_detector, original_val_factuality, original_val_toxicity):
     logger.info(f"Original Validation Factuality Score: {original_val_factuality:.4f}")
@@ -160,13 +180,10 @@ def main():
     # Combine data from all specified paths
     pos_data = combine_data([read_files(path, logger) for path in pos_data_paths])
     neg_data = combine_data([read_files(path, logger) for path in neg_data_paths])
-    # to not use neg augmented files in test so keep high the benchmark
-    neg_test_data = combine_data([read_files('/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/neg', logger)])
 
-    # diversity_evaluator = None
+    # Initialize the factuality detector
     factuality_detector = FactualityDetector("buseskorkmaz/factual-bias-mitigation-models")
-    # factuality_detector = FactualityDetector("/dccstor/nsllm/research/models/factuality/token_type_512_synthetic/model_mnli_snli")
-    logger.info("Initialized Diversity_Evaluator and FactualityDetector")
+    logger.info("Initialized FactualityDetector")
 
     model_name = args.model_name
 
@@ -179,7 +196,7 @@ def main():
         projection_matrix = torch.load(f'/gpfs/home/bsk18/factual-bias-mitigation/src/debiasing_algorithms/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
         model = INLPGPT2LMHeadModel('gpt2', projection_matrix)
     elif "autorefine" in model_name:
-        # not tested yet
+        # Not tested yet
         model = AutoRefine()
     elif "gpt2" == model_name:
         model = AutoModelForCausalLM.from_pretrained('gpt2')
@@ -191,7 +208,6 @@ def main():
     tokenizer.pad_token = tokenizer.eos_token
 
     model = ContrastiveJobDescriptionModel(model, tokenizer)
-    # model = ContrastiveJobDescriptionModel(model_name, tokenizer)
     logger.info(f"Initialized model: {model_name}")
 
     neg_samples_per_pos = 5  # You can adjust this number
@@ -213,25 +229,68 @@ def main():
         max_length=512,
         seed=42
     )
-
+    
+    pos_val_dataset_name = generate_dataset_name('pos_val', args.pos_data)
+    neg_val_dataset_name = generate_dataset_name('neg_val', args.neg_data)
+    pos_test_dataset_name = generate_dataset_name('pos_test', args.pos_data)
+    neg_test_dataset_name = generate_dataset_name('neg_test', args.neg_data)
+    
+    # Calculate original factuality scores with caching
     logger.info("Calculating original factuality scores...")
     logger.info("Calculating pos factuality scores...")
-    pos_original_val_factuality = calculate_original_factuality(val_dataset.pos_data, factuality_detector)
-    pos_original_test_factuality = calculate_original_factuality(test_dataset.pos_data, factuality_detector)
+    pos_original_val_factuality = calculate_original_factuality(
+        val_dataset.pos_data, factuality_detector,
+        dataset_name=pos_val_dataset_name
+    )
+    pos_original_test_factuality = calculate_original_factuality(
+        test_dataset.pos_data, factuality_detector,
+        dataset_name=pos_test_dataset_name
+    )
     logger.info("Calculating neg factuality scores...")
-    neg_original_val_factuality = calculate_original_factuality(val_dataset.neg_data, factuality_detector)
-    neg_original_test_factuality = calculate_original_factuality(test_dataset.neg_data, factuality_detector)
-    original_val_factuality = ((pos_original_val_factuality * len(val_dataset.pos_data['source'])) + (neg_original_val_factuality * len(val_dataset.neg_data['source']))) / len(val_dataset)
-    original_test_factuality = ((pos_original_test_factuality * len(test_dataset.pos_data['source'])) + (neg_original_test_factuality * len(test_dataset.neg_data['source']))) / len(test_dataset)
+    neg_original_val_factuality = calculate_original_factuality(
+        val_dataset.neg_data, factuality_detector,
+        dataset_name=neg_val_dataset_name
+    )
+    neg_original_test_factuality = calculate_original_factuality(
+        test_dataset.neg_data, factuality_detector,
+        dataset_name=neg_test_dataset_name
+    )
+    original_val_factuality = (
+        (pos_original_val_factuality * len(val_dataset.pos_data['source'])) +
+        (neg_original_val_factuality * len(val_dataset.neg_data['source']))
+    ) / len(val_dataset)
+    original_test_factuality = (
+        (pos_original_test_factuality * len(test_dataset.pos_data['source'])) +
+        (neg_original_test_factuality * len(test_dataset.neg_data['source']))
+    ) / len(test_dataset)
+    
     logger.info("Calculating original toxicity scores...")
     logger.info("Calculating pos toxicity scores...")
-    pos_original_val_toxicity = calculate_original_toxicity(val_dataset.pos_data)
-    pos_original_test_toxicity = calculate_original_toxicity(test_dataset.pos_data)
+    pos_original_val_toxicity = calculate_original_toxicity(
+        val_dataset.pos_data, 
+        dataset_name=pos_val_dataset_name
+    )
+    pos_original_test_toxicity = calculate_original_toxicity(
+        test_dataset.pos_data, 
+        dataset_name=pos_test_dataset_name
+    )
     logger.info("Calculating neg toxicity scores...")
-    neg_original_val_toxicity = calculate_original_toxicity(val_dataset.neg_data)
-    neg_original_test_toxicity = calculate_original_toxicity(test_dataset.neg_data)
-    original_val_toxicity = ((pos_original_val_toxicity * len(val_dataset.pos_data['source'])) + (neg_original_val_toxicity * len(val_dataset.neg_data['source']))) / len(val_dataset)
-    original_test_toxicity = ((pos_original_test_toxicity * len(test_dataset.pos_data['source'])) + (neg_original_test_toxicity * len(test_dataset.neg_data['source']))) / len(test_dataset)
+    neg_original_val_toxicity = calculate_original_toxicity(
+        val_dataset.neg_data,
+        dataset_name=neg_val_dataset_name
+    )
+    neg_original_test_toxicity = calculate_original_toxicity(
+        test_dataset.neg_data, 
+        dataset_name=neg_test_dataset_name
+    )
+    original_val_toxicity = (
+        (pos_original_val_toxicity * len(val_dataset.pos_data['source'])) +
+        (neg_original_val_toxicity * len(val_dataset.neg_data['source']))
+    ) / len(val_dataset)
+    original_test_toxicity = (
+        (pos_original_test_toxicity * len(test_dataset.pos_data['source'])) +
+        (neg_original_test_toxicity * len(test_dataset.neg_data['source']))
+    ) / len(test_dataset)
 
     logger.info(f"Original Validation Factuality Score: {original_val_factuality:.4f}")
     logger.info(f"Original Test Factuality Score: {original_test_factuality:.4f}")
@@ -243,11 +302,6 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=4)
     test_loader = DataLoader(test_dataset, batch_size=4)
     logger.info("Created datasets")
-
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)  # batch_size is 1 because each item already contains multiple negatives
-    val_loader = DataLoader(val_dataset, batch_size=4)
-    test_loader = DataLoader(test_dataset, batch_size=4)
-    logger.info("Created DataLoaders")
 
     optimizer = AdamW(model.parameters(), lr=1e-5)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -299,7 +353,7 @@ def main():
         "model_name": model_name,
         "batch_size": 4,
         "learning_rate": 1e-5,
-        "epochs": 10,
+        "epochs": 15,
         "neg_samples_per_pos": neg_samples_per_pos,
         "pos_data_option": args.pos_data,
         "neg_data_option": args.neg_data,
