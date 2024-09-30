@@ -1,4 +1,0 @@
-
-------category level sta------
-Average accuracy 0.1088 - biology
-Average accuracy 0.0976 - business
