@@ -95,7 +95,7 @@ def evaluate_toxicity(text):
     results = toxicity_model(text, batch_size=1, truncation=True, max_length=512)
     return results[0]['score']
 
-def calculate_original_toxicity(data, cache_dir='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr', dataset_name='dataset'):
+def calculate_original_toxicity(data, cache_dir='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/cache', dataset_name='dataset'):
     # Create cache directory if it doesn't exist
     os.makedirs(cache_dir, exist_ok=True)
     
