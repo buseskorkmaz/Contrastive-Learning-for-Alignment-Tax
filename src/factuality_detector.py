@@ -116,7 +116,7 @@ class FactualityDetector:
             threshold_condition = (factuality_score[0]>direct_compare_threshold) \
                 and (factuality_score[0]<(1-direct_compare_threshold))
             if compare_with_direct_score and threshold_condition:
-                direct_score = self.compute_direct_scores(raw_batch).item()
+                direct_score = self.compute_direct_scores(raw_batch).mean().item()
                 factuality_score = max(factuality_score[0], direct_score)
             else:
                 factuality_score = factuality_score[0]
