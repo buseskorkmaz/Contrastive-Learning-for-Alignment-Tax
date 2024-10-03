@@ -61,24 +61,15 @@ class EvaluationDataset(Dataset):
         self.tokenizer = tokenizer
         self.max_length = max_length
         
-        # Set random seed for reproducibility
         random.seed(seed)
         torch.manual_seed(seed)
 
-        # Load positive and negative data
         self.pos_data = self.read_files(pos_data_path)
         self.neg_data = self.read_files(neg_data_path)
 
-        # Ensure positive and negative data have the same length
-        assert len(self.pos_data['source']) == len(self.pos_data['target']), "Source and target data must have the same length"
-
-        # # Combine and shuffle the data
-        # combined_data = list(zip(self.pos_data['source'], self.pos_data['target'], 
-        #                          self.neg_data['source'], self.neg_data['target']))
-        # random.shuffle(combined_data)
-
-        # # Unpack the shuffled data
-        # self.pos_source, self.pos_target, self.neg_source, self.neg_target = zip(*combined_data)
+        self.pos_length = len(self.pos_data['source'])
+        self.neg_length = len(self.neg_data['source'])
+        self.total_length = self.pos_length + self.neg_length
 
     def read_files(self, data_path):
         if "test" in data_path:
@@ -94,47 +85,33 @@ class EvaluationDataset(Dataset):
         return {'source': source, 'target': target}
 
     def __len__(self):
-        return len(self.pos_data['source']) + len(self.neg_data['source'])
+        return self.total_length
 
     def __getitem__(self, idx):
-        # print(type(idx), idx)
-        # print(self.pos_data)
-        # print(self.neg_data)
-        # print(self.pos_data.keys())
-        pos_source = self.pos_data['source'][idx].strip()
-        pos_target = self.pos_data['target'][idx].strip()
-        neg_source = self.neg_data['source'][idx].strip()
-        neg_target = self.neg_data['target'][idx].strip()
+        if idx < self.pos_length:
+            is_positive = True
+            source = self.pos_data['source'][idx].strip()
+            target = self.pos_data['target'][idx].strip()
+        else:
+            is_positive = False
+            idx = idx - self.pos_length
+            source = self.neg_data['source'][idx].strip()
+            target = self.neg_data['target'][idx].strip()
 
-        # Encode positive samples
-        pos_source_encoding = self.tokenizer(pos_source, truncation=True, padding='max_length', 
-                                             max_length=self.max_length, return_tensors='pt')
-        pos_target_encoding = self.tokenizer(pos_target, truncation=True, padding='max_length', 
-                                             max_length=self.max_length, return_tensors='pt')
-        pos_combined_encoding = self.tokenizer(pos_source, pos_target, truncation=True, padding='max_length', 
-                                               max_length=self.max_length, return_tensors='pt')
-
-        # Encode negative samples
-        neg_source_encoding = self.tokenizer(neg_source, truncation=True, padding='max_length', 
-                                             max_length=self.max_length, return_tensors='pt')
-        neg_target_encoding = self.tokenizer(neg_target, truncation=True, padding='max_length', 
-                                             max_length=self.max_length, return_tensors='pt')
-        neg_combined_encoding = self.tokenizer(neg_source, neg_target, truncation=True, padding='max_length', 
-                                               max_length=self.max_length, return_tensors='pt')
+        source_encoding = self.tokenizer(source, truncation=True, padding='max_length', 
+                                         max_length=self.max_length, return_tensors='pt')
+        target_encoding = self.tokenizer(target, truncation=True, padding='max_length', 
+                                         max_length=self.max_length, return_tensors='pt')
+        combined_encoding = self.tokenizer(source, target, truncation=True, padding='max_length', 
+                                           max_length=self.max_length, return_tensors='pt')
 
         return {
-            'pos_full_prompt': pos_source,
-            'neg_full_prompt': neg_source,
-            'pos_source_ids': pos_source_encoding['input_ids'].squeeze(),
-            'pos_source_attention_mask': pos_source_encoding['attention_mask'].squeeze(),
-            'pos_target_ids': pos_target_encoding['input_ids'].squeeze(),
-            'pos_target_attention_mask': pos_target_encoding['attention_mask'].squeeze(),
-            'pos_combined_ids': pos_combined_encoding['input_ids'].squeeze(),
-            'pos_combined_attention_mask': pos_combined_encoding['attention_mask'].squeeze(),
-            'neg_source_ids': neg_source_encoding['input_ids'].squeeze(),
-            'neg_source_attention_mask': neg_source_encoding['attention_mask'].squeeze(),
-            'neg_target_ids': neg_target_encoding['input_ids'].squeeze(),
-            'neg_target_attention_mask': neg_target_encoding['attention_mask'].squeeze(),
-            'neg_combined_ids': neg_combined_encoding['input_ids'].squeeze(),
-            'neg_combined_attention_mask': neg_combined_encoding['attention_mask'].squeeze(),
+            'is_positive': is_positive,
+            'full_prompt': source,
+            'source_ids': source_encoding['input_ids'].squeeze(),
+            'source_attention_mask': source_encoding['attention_mask'].squeeze(),
+            'target_ids': target_encoding['input_ids'].squeeze(),
+            'target_attention_mask': target_encoding['attention_mask'].squeeze(),
+            'combined_ids': combined_encoding['input_ids'].squeeze(),
+            'combined_attention_mask': combined_encoding['attention_mask'].squeeze(),
         }
