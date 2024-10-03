@@ -14,11 +14,13 @@ from tqdm import tqdm
 import logging
 import sys
 from datasets import load_dataset
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
-from scripts.summarization.models import get_hf_id
-from scripts.seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+from summarization.models import get_hf_id
+from seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, LlamaTokenizer, AutoTokenizer
 import torch
+from datetime import datetime
+
 
 choices = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
 
@@ -35,6 +37,34 @@ def get_model_max_length(model_name):
     else:
         return 1023  # Default fallback
 
+def setup_logging(args, file_prefix):
+    # Ensure the log directory exists
+    save_log_dir = os.path.join(args.save_dir, "log")
+    os.makedirs(save_log_dir, exist_ok=True)
+
+    # Create a unique log file name
+    timestamp = datetime.now().strftime('%m-%d_%H-%M')
+    log_file_name = f"{file_prefix}_{timestamp}_logfile.log"
+    log_file_path = os.path.join(save_log_dir, log_file_name)
+
+    # Create a logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # Create handlers
+    file_handler = logging.FileHandler(log_file_path, mode='w')
+    console_handler = logging.StreamHandler(sys.stdout)
+
+    # Create formatter and add it to handlers
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+
+    # Add handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    return logger
 
 def load_mmlu_pro():
     dataset = load_dataset("TIGER-Lab/MMLU-Pro")
@@ -50,21 +80,21 @@ def load_model(model_name):
     print(model_name)
     if 'gpt2' in model_name:
         llm = LLM(model=model_name, gpu_memory_utilization=float(args.gpu_util),
-                tensor_parallel_size=torch.cuda.device_count(),
+                tensor_parallel_size=1,
                 max_model_len=max_model_length,
                 trust_remote_code=True,
                 tokenizer='gpt2')
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     elif 'llama' in model_name:
         llm = LLM(model=model_name, gpu_memory_utilization=float(args.gpu_util),
-                tensor_parallel_size=torch.cuda.device_count(),
+                tensor_parallel_size=1,
                 max_model_len=max_model_length,
                 trust_remote_code=True,
                 tokenizer='meta-llama/Llama-2-7b-hf')
         tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", legacy=False)
     elif 'phi-2' in model_name or 'phi2' in model_name:
         llm = LLM(model=model_name, gpu_memory_utilization=float(args.gpu_util),
-                tensor_parallel_size=torch.cuda.device_count(),
+                tensor_parallel_size=1,
                 max_model_len=max_model_length,
                 trust_remote_code=True,
                 tokenizer='microsoft/phi-2')
@@ -166,7 +196,7 @@ def extract_final(text):
 def batch_inference(llm, sampling_params, inference_batch):
     start = time.time()
     outputs = llm.generate(inference_batch, sampling_params)
-    logging.info(str(len(inference_batch)) + "size batch costing time: " + str(time.time() - start))
+    logger.info(str(len(inference_batch)) + "size batch costing time: " + str(time.time() - start))
     response_batch = []
     pred_batch = []
     for output in outputs:
@@ -207,50 +237,58 @@ from tqdm import tqdm
 def eval_cot(subject, model, tokenizer, val_df, test_df, output_path):
     llm, sampling_params = model
     global choices
-    logging.info(f"Evaluating subject: {subject}")
+    logger.info(f"Evaluating subject: {subject}")
     inference_batches = []
+    discarded_count = 0
 
     # Create a tqdm progress bar for the main loop
     main_pbar = tqdm(total=len(test_df), desc="Processing test data")
 
-    for i in range(len(test_df)):
+    for curr in test_df:
         k = args.ntrain
-        curr = test_df[i]
         prompt_length_ok = False
         prompt = None
-        attempts = 0
 
-        # Create a nested progress bar for prompt generation attempts
-        with tqdm(total=args.ntrain, desc=f"Generating prompt for item {i+1}", leave=False) as prompt_pbar:
-            while not prompt_length_ok:
-                prompt = generate_cot_prompt(val_df, curr, k)
-                inputs = tokenizer(prompt, return_tensors="pt")
-                inputs = {key: value.cuda() for key, value in inputs.items()}
-                length = len(inputs["input_ids"][0])
-                if length < max_model_length - max_new_tokens:
-                    prompt_length_ok = True
+        while not prompt_length_ok and k >= 0:
+            prompt = generate_cot_prompt(val_df, curr, k)
+            inputs = tokenizer(prompt, return_tensors="pt")
+            length = len(inputs["input_ids"][0])
+            
+            if length < max_model_length - max_new_tokens:
+                prompt_length_ok = True
+            else:
                 k -= 1
-                attempts += 1
-                prompt_pbar.update(1)
-                prompt_pbar.set_postfix({"Length": length, "Max": max_model_length - max_new_tokens})
 
-        inference_batches.append(prompt)
+        if prompt_length_ok:
+            inference_batches.append(prompt)
+        else:
+            discarded_count += 1
+            logger.info(f"Discarded a sample from subject {subject} due to length constraints")
+
         main_pbar.update(1)
-        main_pbar.set_postfix({"Prompt attempts": attempts})
+        main_pbar.set_postfix({"Discarded": discarded_count})
 
-    logging.info(f"Starting batch inference for {len(inference_batches)} items")
+    main_pbar.close()
+    logger.info(f"Discarded {discarded_count} samples for subject {subject} due to length constraints")
+
+    if not inference_batches:
+        logger.warning(f"No valid samples for subject {subject} after length filtering")
+        return 0.0, 0, 0, discarded_count
+
+    logger.info(f"Starting batch inference for {len(inference_batches)} items")
     pred_batch, response_batch = batch_inference(llm, sampling_params, inference_batches)
     
     res = []
-    for j, curr in tqdm(enumerate(test_df), total=len(test_df), desc="Processing results"):
-        curr["pred"] = pred_batch[j]
-        curr["model_outputs"] = response_batch[j]
-        res.append(curr)
+    for j, (curr, pred, response) in enumerate(zip(test_df, pred_batch, response_batch)):
+        if j < len(inference_batches):  # Only process non-discarded samples
+            curr["pred"] = pred
+            curr["model_outputs"] = response
+            res.append(curr)
 
     accu, corr, wrong = save_res(res, output_path)
-    logging.info(f"Batch accuracy: {accu:.2f}, correct: {corr}, wrong: {wrong}")
+    logger.info(f"Batch accuracy: {accu:.2f}, correct: {corr}, wrong: {wrong}")
 
-    return accu, corr, wrong
+    return accu, corr, wrong, discarded_count
 
 
 def main():
@@ -273,19 +311,22 @@ def main():
             for each in args_selected:
                 if each.replace(" ", "_") in sub.replace(" ", "_"):
                     selected_subjects.append(sub)
-    logging.info("selected subjects:\n" + "\n".join(selected_subjects))
+    logger.info("selected subjects:\n" + "\n".join(selected_subjects))
     print("selected subjects:\n" + "\n".join(selected_subjects))
     sta_dict = {}
     selected_subjects = sorted(selected_subjects)
     with open(os.path.join(summary_path), 'a') as f:
         f.write("\n------category level sta------\n")
+    total_discarded = 0
     for subject in selected_subjects:
         if subject not in sta_dict:
             sta_dict[subject] = {"corr": 0.0, "wrong": 0.0, "accu": 0.0}
         test_df = select_by_category(full_test_df, subject)
         val_df = select_by_category(full_val_df, subject)
         output_path = os.path.join(save_result_dir, "{}.json".format(subject))
-        acc, corr_count, wrong_count = eval_cot(subject, model, tokenizer, val_df, test_df, output_path)
+        acc, corr_count, wrong_count, discarded_count = eval_cot(subject, model, tokenizer, val_df, test_df, output_path)
+        total_discarded += discarded_count
+        logger.info(f"Discarded {discarded_count} samples for subject {subject} due to length constraints")
         sta_dict[subject]["corr"] = corr_count
         sta_dict[subject]["wrong"] = wrong_count
         sta_dict[subject]["accu"] = acc
@@ -297,6 +338,7 @@ def main():
         total_wrong += v["wrong"]
     total_accu = total_corr / (total_corr + total_wrong + 0.000001)
     sta_dict["total"] = {"corr": total_corr, "wrong": total_wrong, "accu": total_accu}
+    logger.info(f"Total discarded samples across all subjects: {total_discarded}")
 
     with open(os.path.join(summary_path), 'a') as f:
         f.write("\n------average acc sta------\n")
@@ -335,11 +377,10 @@ if __name__ == "__main__":
     os.makedirs(save_result_dir, exist_ok=True)
     save_log_dir = os.path.join(args.save_dir, "log")
     os.makedirs(save_log_dir, exist_ok=True)
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s',
-                        handlers=[logging.FileHandler(os.path.join(save_log_dir,
-                                                                   file_name.replace("_summary.txt",
-                                                                                     "_logfile.log"))),
-                                  logging.StreamHandler(sys.stdout)])
+    # Setup logging
+    logger = setup_logging(args, file_prefix)
 
+    # Your existing code starts here
+    logger.info("Starting the script")
     main()
 
