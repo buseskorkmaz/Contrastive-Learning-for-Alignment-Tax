@@ -6,7 +6,7 @@ class ContrastiveJobDescriptionModel(torch.nn.Module):
         self.transformer = model
         self.tokenizer = tokenizer
         self.transformer.resize_token_embeddings(len(tokenizer))
-        self.projection = torch.nn.Linear(self.transformer.config.n_embd, 256)
+        self.projection = torch.nn.Linear(self.transformer.config.n_embd, 128)
 
     def forward(self, input_ids, attention_mask):
         outputs = self.transformer(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True)
@@ -20,11 +20,11 @@ class ContrastiveJobDescriptionModel(torch.nn.Module):
         
         return self.projection(pooled_output), logits
 
-    def generate(self, input_ids, attention_mask, max_length=256):
+    def generate(self, input_ids, attention_mask, max_length=128):
         return self.transformer.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
-            max_new_tokens=256,
+            max_new_tokens=128,
             num_return_sequences=1,
             no_repeat_ngram_size=2,
             do_sample=True,
