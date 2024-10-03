@@ -10,43 +10,49 @@ def preprocess_text(text):
     cleaned_text = re.sub(pattern, "", text, flags=re.DOTALL | re.IGNORECASE)
     return cleaned_text.strip().lower()
 
-def combined_loss(pos_embeddings, neg_embeddings, logits, targets, contrastive_weight=1, ce_weight=16, temperature=0.7):
-    batch_size = pos_embeddings.shape[0]
-    embedding_dim = pos_embeddings.shape[1]
+def combined_loss(pos_embeddings, neg_embeddings, logits, labels, contrastive_weight=1, ce_weight=1, temperature=0.7):
+    # Combine positive and negative embeddings
+    embeddings = torch.cat([pos_embeddings.unsqueeze(1), neg_embeddings], dim=1)  # [batch_size, num_negatives+1, embedding_dim]
 
-    # Adjust for neg_embeddings
-    if neg_embeddings.dim() == 2:
-        # Only one negative per sample
-        num_negatives = 1
-        neg_embeddings = neg_embeddings.unsqueeze(1)  # Shape: [batch_size, 1, embedding_dim]
-    else:
-        num_negatives = neg_embeddings.shape[1]
-    
-    print(f"pos_embeddings.shape: {pos_embeddings.shape}")
-    print(f"neg_embeddings.shape: {neg_embeddings.shape}")
-    print(f"batch_size: {batch_size}")
-    print(f"num_negatives: {num_negatives}")
-    print(f"embedding_dim: {embedding_dim}")
-    
-    # Expand pos_embeddings to match neg_embeddings
-    pos_embeddings_expanded = pos_embeddings.unsqueeze(1).expand(-1, num_negatives, -1)
-    
     # Compute similarity matrix
-    similarity_matrix = torch.sum(pos_embeddings_expanded * neg_embeddings, dim=-1) / temperature
-    labels = torch.zeros(batch_size, dtype=torch.long, device=pos_embeddings.device)
-    contrastive_loss_value = torch.nn.functional.cross_entropy(similarity_matrix, labels)
-    
-    # Cross-entropy loss for language modeling
-    shift_logits = logits[..., :-1, :].contiguous()
-    shift_labels = targets[..., 1:].contiguous()
+    similarity_matrix = torch.bmm(embeddings, embeddings.transpose(1, 2)) / temperature  # [batch_size, num_negatives+1, num_negatives+1]
+
+    # We need to create labels for contrastive loss
+    contrastive_labels = torch.arange(embeddings.size(1), device=embeddings.device).long()
+    contrastive_loss_value = torch.nn.functional.cross_entropy(similarity_matrix.view(-1, embeddings.size(1)), contrastive_labels.repeat(embeddings.size(0)))
+
+    # Cross-entropy loss
+    logits_reshaped = logits.view(-1, logits.size(-1))
+    labels_reshaped = labels.view(-1)
+    # After reshaping logits and labels
+    print(f"logits_reshaped.min(): {logits_reshaped.min().item()}, logits_reshaped.max(): {logits_reshaped.max().item()}")
+    print(f"labels_reshaped.min(): {labels_reshaped.min().item()}, labels_reshaped.max(): {labels_reshaped.max().item()}")
+
+    if torch.isnan(logits_reshaped).any():
+        print("NaN detected in logits_reshaped")
+    if torch.isinf(logits_reshaped).any():
+        print("Inf detected in logits_reshaped")
+    if torch.isnan(labels_reshaped).any():
+        print("NaN detected in labels_reshaped")
+    if torch.isinf(labels_reshaped).any():
+        print("Inf detected in labels_reshaped")
+
+    # Ensure labels are of type torch.LongTensor
+    labels_reshaped = labels_reshaped.long()
+    print(f"Labels dtype: {labels_reshaped.dtype}")
+    invalid_labels = labels_reshaped[(labels_reshaped != -100) & ((labels_reshaped < 0) | (labels_reshaped >= logits.size(-1)))]
+    if invalid_labels.numel() > 0:
+        print(f"Found invalid labels: {invalid_labels}")
+
     ce_loss_value = torch.nn.functional.cross_entropy(
-        shift_logits.view(-1, shift_logits.size(-1)), 
-        shift_labels.view(-1)
+        logits_reshaped,
+        labels_reshaped,
+        ignore_index=-100
     )
-    
+
     # Combined loss
     loss = contrastive_weight * contrastive_loss_value + ce_weight * ce_loss_value
-    return loss, contrastive_weight * contrastive_loss_value, ce_weight * ce_loss_value
+    return loss, contrastive_loss_value, ce_loss_value
 
 def evaluate_w_fairness(model, tokenizer, data_loader, device, diversity_evaluator, factuality_detector, logger, temperature=0.5):
     model.eval()
@@ -103,10 +109,10 @@ def evaluate_w_fairness(model, tokenizer, data_loader, device, diversity_evaluat
     avg_fairness_score = total_fairness_score/ (num_samples // 10)
 
     return avg_loss, avg_contrastive_loss, avg_ce_loss, avg_factuality_score, avg_fairness_score
+
 def evaluate_w_toxicity(model, tokenizer, data_loader, device, factuality_detector, logger, temperature=0.5, max_samples=100):
     model.eval()
     total_loss = 0
-    total_contrastive_loss = 0
     total_ce_loss = 0
     total_factuality_score = 0
     total_toxicity_score = 0
@@ -128,90 +134,106 @@ def evaluate_w_toxicity(model, tokenizer, data_loader, device, factuality_detect
             if num_samples >= max_samples:
                 break
 
+            is_positive = batch['is_positive'].item()  # Assuming batch size is 1
+
+            # Ensure we maintain the ratio of positive to negative samples
+            if is_positive and pos_samples >= target_pos_samples:
+                continue
+            if not is_positive and neg_samples >= target_neg_samples:
+                continue
+
+            input_ids = batch['combined_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
+            labels = batch['labels'].to(device)
+            full_prompt = batch['full_prompt'][0]
+
             # Forward pass
-            embeddings, logits = model(batch['combined_ids'].to(device), batch['combined_attention_mask'].to(device))
+            embeddings, logits = model(input_ids, attention_mask)
+            if torch.isnan(logits).any():
+                print("NaN detected in logits")
+            if torch.isinf(logits).any():
+                print("Inf detected in logits")
 
-            # Generate outputs for factuality and toxicity scoring
-            generated_ids = model.generate(batch['source_ids'].to(device), batch['source_attention_mask'].to(device))
+            # Generate summaries
+            generated_ids = model.generate(
+                input_ids=batch['pos_source_ids'].to(device),
+                attention_mask=batch['pos_source_attention_mask'].to(device),
+                max_length=128,
+                pad_token_id=tokenizer.eos_token_id  # Ensure the pad_token_id is set
+            )
 
-            for i in range(embeddings.shape[0]):
-                if num_samples >= max_samples:
-                    break
+            generated_summary = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
-                is_positive = batch['is_positive'][i].item()
+            if is_positive:
+                # Handle labels for decoding
+                labels_clean = labels.clone()
+                labels_clean[labels_clean == -100] = tokenizer.pad_token_id
 
-                # Ensure we maintain the ratio of positive to negative samples
-                if is_positive and pos_samples >= target_pos_samples:
-                    continue
-                if not is_positive and neg_samples >= target_neg_samples:
-                    continue
+                labels_list = labels_clean.tolist()
+                filtered_labels = [
+                    [token_id for token_id in seq if token_id != tokenizer.pad_token_id]
+                    for seq in labels_list
+                ]
 
-                full_prompt = batch['full_prompt'][i]
-                generated_summary = tokenizer.decode(generated_ids[i], skip_special_tokens=True)
-                # Debug logging
-                logger.info(f"Debug: Factuality Detector Input")
-                logger.info(f"Full Prompt: {full_prompt}")
-                logger.info(f"Generated Summary: {generated_summary}")
-                logger.info(f"Preprocessed Full Prompt: {preprocess_text(full_prompt)}")
-                logger.info(f"Preprocessed Generated Summary: {preprocess_text(generated_summary)}")
-                logger.info("---")
-                
-                # Calculate factuality score one sample at a time
-                _, _, factuality_score = factuality_detector.generate_score(
-                    [preprocess_text(full_prompt)], 
-                    [preprocess_text(generated_summary)], 
-                    summac_style=True
+                reference_summary = tokenizer.decode(filtered_labels[0], skip_special_tokens=True)
+
+                # Compute loss
+                logits_reshaped = logits.view(-1, logits.size(-1))
+                labels_reshaped = labels.view(-1)
+                ce_loss_value = torch.nn.functional.cross_entropy(
+                    logits_reshaped,
+                    labels_reshaped,
+                    ignore_index=-100
                 )
-                total_factuality_score += factuality_score
+                total_ce_loss += ce_loss_value.item()
+                total_loss += ce_loss_value.item()
 
-                # Calculate toxicity score
-                toxicity_score = evaluate_toxicity(generated_summary)
-                total_toxicity_score += toxicity_score
-
-                num_samples += 1
-                if is_positive:
-                    pos_samples += 1
-                else:
-                    neg_samples += 1
+                pos_samples += 1
 
                 # Log some examples
-                if num_samples % 10 == 0:
-                    logger.info(f"Sample {num_samples}:")
-                    logger.info(f"Is Positive: {is_positive}")
-                    logger.info(f"Prompt: {full_prompt}")
-                    logger.info(f"Generated: {generated_summary}")
-                    logger.info(f"Factuality score: {factuality_score}")
-                    logger.info(f"Toxicity score: {toxicity_score}")
+                if pos_samples % 10 == 0:
+                    logger.info(f"Positive Sample {pos_samples}:")
+                    logger.info(f"Full Prompt: {full_prompt}")
+                    logger.info(f"Reference Summary: {reference_summary}")
+                    logger.info(f"Generated Summary: {generated_summary}")
+                    logger.info(f"Loss: {ce_loss_value.item()}")
+                    logger.info("---")
+            else:
+                neg_samples += 1
+                # Optionally, log negative samples every so often
+                if neg_samples % 10 == 0:
+                    logger.info(f"Negative Sample {neg_samples}:")
+                    logger.info(f"Full Prompt: {full_prompt}")
+                    logger.info(f"Generated Summary: {generated_summary}")
                     logger.info("---")
 
-            # Calculate loss
-            if 'is_positive' in batch and batch['is_positive'].any():
-                pos_indices = batch['is_positive'].nonzero(as_tuple=True)[0]
-                neg_indices = (~batch['is_positive']).nonzero(as_tuple=True)[0]
-                
-                if len(pos_indices) > 0 and len(neg_indices) > 0:
-                    pos_embeddings = embeddings[pos_indices]
-                    neg_embeddings = embeddings[neg_indices]
-                    pos_logits = logits[pos_indices]
-                    pos_target_ids = batch['target_ids'][pos_indices].to(device)
-                    
-                    loss, contrastive_loss, ce_loss = combined_loss(pos_embeddings, neg_embeddings, pos_logits, pos_target_ids)
-                    
-                    total_loss += loss.item()
-                    total_contrastive_loss += contrastive_loss.item()
-                    total_ce_loss += ce_loss.item()
+            # Calculate factuality and toxicity scores for both positive and negative samples
+            _, _, factuality_score = factuality_detector.generate_score(
+                [preprocess_text(full_prompt)],
+                [preprocess_text(generated_summary)],
+                summac_style=True
+            )
+            total_factuality_score += factuality_score
 
-    avg_loss = total_loss / len(data_loader) if total_loss > 0 else 0
-    avg_contrastive_loss = total_contrastive_loss / len(data_loader) if total_contrastive_loss > 0 else 0
-    avg_ce_loss = total_ce_loss / len(data_loader) if total_ce_loss > 0 else 0
-    avg_factuality_score = total_factuality_score / num_samples
-    avg_toxicity_score = total_toxicity_score / num_samples
+            toxicity_score = evaluate_toxicity(generated_summary)
+            total_toxicity_score += toxicity_score
 
-    logger.info(f"Evaluated on {num_samples} samples ({pos_samples} positive, {neg_samples} negative)")
-    logger.info(f"Original dataset ratio - Positive: {pos_ratio:.2f}, Negative: {neg_ratio:.2f}")
-    logger.info(f"Evaluated sample ratio - Positive: {pos_samples/num_samples:.2f}, Negative: {neg_samples/num_samples:.2f}")
+            num_samples += 1
 
-    return avg_loss, avg_contrastive_loss, avg_ce_loss, avg_factuality_score, avg_toxicity_score
+            # Break if we've reached the desired number of samples
+            if pos_samples >= target_pos_samples and neg_samples >= target_neg_samples:
+                break
+
+        # Calculate average losses and scores
+        avg_loss = total_ce_loss / pos_samples if pos_samples > 0 else 0
+        avg_factuality_score = total_factuality_score / num_samples if num_samples > 0 else 0
+        avg_toxicity_score = total_toxicity_score / num_samples if num_samples > 0 else 0
+
+        logger.info(f"Evaluated on {num_samples} samples ({pos_samples} positive, {neg_samples} negative)")
+        logger.info(f"Original dataset ratio - Positive: {pos_ratio:.2f}, Negative: {neg_ratio:.2f}")
+        logger.info(f"Evaluated sample ratio - Positive: {pos_samples/num_samples:.2f}, Negative: {neg_samples/num_samples:.2f}")
+
+        return avg_loss, 0, avg_loss, avg_factuality_score, avg_toxicity_score
 
 def contrastive_loss(pos_embeddings, neg_embeddings, temperature=1):
     batch_size, num_negatives = neg_embeddings.shape
