@@ -13,3 +13,7 @@ Average accuracy 0.1392 - math
 Average accuracy 0.1872 - other
 Average accuracy 0.1122 - philosophy
 Average accuracy 0.1678 - physics
+Average accuracy 0.3321 - psychology
+
+------average acc sta------
+Average accuracy: 0.1889
