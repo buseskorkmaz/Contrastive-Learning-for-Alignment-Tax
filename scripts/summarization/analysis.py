@@ -19,7 +19,7 @@ def generate_latex_table():
     model_families = {
         'gpt2': ['gpt2', 'gpt2_cda_gender', 'gpt2_cda_race', 'gpt2_cda_religion', 'gpt2_dropout',
                  'inlp-gender', 'inlp-race', 'sentence_debiasing-gender', 'sentence_debiasing-race',
-                 'self_debiasing-gpt2', 'instructive_debiasing-gpt2'],
+                 'self_debiasing-gpt2', 'instructive_debiasing-gpt2', 'gpt2-tldr'],
         'phi2': ['phi2', 'phi2_cda_gender', 'phi2_cda_religion', 'phi2_cda_race', 'phi2_dropout','self_debiasing-phi2',
                  'instructive_debiasing-phi2'],
         'llama2': ['llama2-7b', 'llama2-7b_cda_gender', 'llama2-7b_cda_religion', 'llama2-7b_cda_race',
