@@ -103,8 +103,7 @@ def evaluate_w_fairness(model, tokenizer, data_loader, device, diversity_evaluat
     avg_fairness_score = total_fairness_score/ (num_samples // 10)
 
     return avg_loss, avg_contrastive_loss, avg_ce_loss, avg_factuality_score, avg_fairness_score
-
-def evaluate_w_toxicity(model, tokenizer, data_loader, device, factuality_detector, logger, temperature=0.5):
+def evaluate_w_toxicity(model, tokenizer, data_loader, device, factuality_detector, logger, temperature=0.5, max_samples=100):
     model.eval()
     total_loss = 0
     total_contrastive_loss = 0
@@ -112,73 +111,105 @@ def evaluate_w_toxicity(model, tokenizer, data_loader, device, factuality_detect
     total_factuality_score = 0
     total_toxicity_score = 0
     num_samples = 0
+    pos_samples = 0
+    neg_samples = 0
+
+    # Get the total number of samples and the ratio
+    total_dataset_size = data_loader.dataset.pos_length + data_loader.dataset.neg_length
+    pos_ratio = data_loader.dataset.pos_length / total_dataset_size
+    neg_ratio = data_loader.dataset.neg_length / total_dataset_size
+
+    # Calculate the target number of positive and negative samples
+    target_pos_samples = int(max_samples * pos_ratio)
+    target_neg_samples = max_samples - target_pos_samples
 
     with torch.no_grad():
         for batch in tqdm(data_loader, desc="Evaluating"):
-            # Forward pass
-            pos_embeddings, pos_logits = model(batch['pos_combined_ids'].to(device), batch['pos_combined_attention_mask'].to(device))
-            neg_embeddings, neg_logits = model(batch['neg_combined_ids'].to(device), batch['neg_combined_attention_mask'].to(device))
+            if num_samples >= max_samples:
+                break
 
-            # Calculate individual losses
-            loss, contrastive_loss, ce_loss = combined_loss(pos_embeddings, neg_embeddings, pos_logits, batch['pos_target_ids'].to(device))
-            
-            total_loss += loss.item()
-            total_contrastive_loss += contrastive_loss.item()
-            total_ce_loss += ce_loss.item()
+            # Forward pass
+            embeddings, logits = model(batch['combined_ids'].to(device), batch['combined_attention_mask'].to(device))
 
             # Generate outputs for factuality and toxicity scoring
-            pos_generated_ids = model.generate(batch['pos_source_ids'].to(device), batch['pos_source_attention_mask'].to(device))
-            neg_generated_ids = model.generate(batch['neg_source_ids'].to(device), batch['neg_source_attention_mask'].to(device))
+            generated_ids = model.generate(batch['source_ids'].to(device), batch['source_attention_mask'].to(device))
 
-            all_prompts = []
-            all_generated = []
+            for i in range(embeddings.shape[0]):
+                if num_samples >= max_samples:
+                    break
 
-            # Process positive samples
-            for i in range(pos_embeddings.shape[0]):
-                pos_full_prompt = batch['pos_full_prompt'][i]
-                pos_generated_job_desc = tokenizer.decode(pos_generated_ids[i], skip_special_tokens=True)
+                is_positive = batch['is_positive'][i].item()
 
-                all_prompts.append(preprocess_text(pos_full_prompt))
-                all_generated.append(preprocess_text(pos_generated_job_desc))
+                # Ensure we maintain the ratio of positive to negative samples
+                if is_positive and pos_samples >= target_pos_samples:
+                    continue
+                if not is_positive and neg_samples >= target_neg_samples:
+                    continue
 
-                # Calculate toxicity score for positive sample
-                pos_toxicity_score = evaluate_toxicity(pos_generated_job_desc)
-                total_toxicity_score += pos_toxicity_score
-
-                num_samples += 1
-
-            # Process negative samples
-            for i in range(neg_embeddings.shape[0]):
-                neg_full_prompt = batch['neg_full_prompt'][i]
-                neg_generated_job_desc = tokenizer.decode(neg_generated_ids[i], skip_special_tokens=True)
-
-                all_prompts.append(preprocess_text(neg_full_prompt))
-                all_generated.append(preprocess_text(neg_generated_job_desc))
-
-                # Calculate toxicity score for negative sample
-                neg_toxicity_score = evaluate_toxicity(neg_generated_job_desc)
-                total_toxicity_score += neg_toxicity_score
-
-                num_samples += 1
-
-            # Calculate factuality score for the batch
-            _, _, batch_factuality_score = factuality_detector.generate_score(all_prompts, all_generated, summac_style=True)
-            total_factuality_score += batch_factuality_score * len(all_prompts)
-
-            # Log some examples
-            if num_samples % 100 == 0:
-                logger.info(f"Sample {num_samples}:")
-                logger.info(f"Positive Prompt: {all_prompts[0]}")
-                logger.info(f"Positive Generated: {all_generated[0]}")
-                logger.info(f"Negative Prompt: {all_prompts[-1]}")
-                logger.info(f"Negative Generated: {all_generated[-1]}")
+                full_prompt = batch['full_prompt'][i]
+                generated_summary = tokenizer.decode(generated_ids[i], skip_special_tokens=True)
+                # Debug logging
+                logger.info(f"Debug: Factuality Detector Input")
+                logger.info(f"Full Prompt: {full_prompt}")
+                logger.info(f"Generated Summary: {generated_summary}")
+                logger.info(f"Preprocessed Full Prompt: {preprocess_text(full_prompt)}")
+                logger.info(f"Preprocessed Generated Summary: {preprocess_text(generated_summary)}")
                 logger.info("---")
+                
+                # Calculate factuality score one sample at a time
+                _, _, factuality_score = factuality_detector.generate_score(
+                    [preprocess_text(full_prompt)], 
+                    [preprocess_text(generated_summary)], 
+                    summac_style=True
+                )
+                total_factuality_score += factuality_score
 
-    avg_loss = total_loss / len(data_loader)
-    avg_contrastive_loss = total_contrastive_loss / len(data_loader)
-    avg_ce_loss = total_ce_loss / len(data_loader)
+                # Calculate toxicity score
+                toxicity_score = evaluate_toxicity(generated_summary)
+                total_toxicity_score += toxicity_score
+
+                num_samples += 1
+                if is_positive:
+                    pos_samples += 1
+                else:
+                    neg_samples += 1
+
+                # Log some examples
+                if num_samples % 10 == 0:
+                    logger.info(f"Sample {num_samples}:")
+                    logger.info(f"Is Positive: {is_positive}")
+                    logger.info(f"Prompt: {full_prompt}")
+                    logger.info(f"Generated: {generated_summary}")
+                    logger.info(f"Factuality score: {factuality_score}")
+                    logger.info(f"Toxicity score: {toxicity_score}")
+                    logger.info("---")
+
+            # Calculate loss
+            if 'is_positive' in batch and batch['is_positive'].any():
+                pos_indices = batch['is_positive'].nonzero(as_tuple=True)[0]
+                neg_indices = (~batch['is_positive']).nonzero(as_tuple=True)[0]
+                
+                if len(pos_indices) > 0 and len(neg_indices) > 0:
+                    pos_embeddings = embeddings[pos_indices]
+                    neg_embeddings = embeddings[neg_indices]
+                    pos_logits = logits[pos_indices]
+                    pos_target_ids = batch['target_ids'][pos_indices].to(device)
+                    
+                    loss, contrastive_loss, ce_loss = combined_loss(pos_embeddings, neg_embeddings, pos_logits, pos_target_ids)
+                    
+                    total_loss += loss.item()
+                    total_contrastive_loss += contrastive_loss.item()
+                    total_ce_loss += ce_loss.item()
+
+    avg_loss = total_loss / len(data_loader) if total_loss > 0 else 0
+    avg_contrastive_loss = total_contrastive_loss / len(data_loader) if total_contrastive_loss > 0 else 0
+    avg_ce_loss = total_ce_loss / len(data_loader) if total_ce_loss > 0 else 0
     avg_factuality_score = total_factuality_score / num_samples
     avg_toxicity_score = total_toxicity_score / num_samples
+
+    logger.info(f"Evaluated on {num_samples} samples ({pos_samples} positive, {neg_samples} negative)")
+    logger.info(f"Original dataset ratio - Positive: {pos_ratio:.2f}, Negative: {neg_ratio:.2f}")
+    logger.info(f"Evaluated sample ratio - Positive: {pos_samples/num_samples:.2f}, Negative: {neg_samples/num_samples:.2f}")
 
     return avg_loss, avg_contrastive_loss, avg_ce_loss, avg_factuality_score, avg_toxicity_score
 
