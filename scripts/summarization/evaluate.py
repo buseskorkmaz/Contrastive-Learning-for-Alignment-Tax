@@ -6,10 +6,9 @@ import logging
 from datasets import load_dataset
 import torch
 from transformers import pipeline, GPT2Tokenizer, AutoModelForCausalLM
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+from seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
-from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
-from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
-from scripts.seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
 from src.factuality_detector import FactualityDetector
 import traceback
 import argparse
