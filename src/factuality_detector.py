@@ -25,8 +25,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class FactualityDetector:
     def __init__(self, modelname, max_seq_length=512):
-        self.model = AutoModelForSequenceClassification.from_pretrained(modelname, subfolder='factuality_detector')
-        self.tokenizer = AutoTokenizer.from_pretrained(modelname, subfolder='factuality_detector')
+        self.model = AutoModelForSequenceClassification.from_pretrained('/gpfs/home/bsk18/factual-bias-mitigation/factuality_detector_model', torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained('/gpfs/home/bsk18/factual-bias-mitigation/factuality_detector_model')
         self.max_seq_length = max_seq_length
 
         self.model = self.model.to(device)
@@ -116,7 +116,7 @@ class FactualityDetector:
             threshold_condition = (factuality_score[0]>direct_compare_threshold) \
                 and (factuality_score[0]<(1-direct_compare_threshold))
             if compare_with_direct_score and threshold_condition:
-                direct_score = self.compute_direct_scores(raw_batch).mean().item()
+                direct_score = self.compute_direct_scores(raw_batch).item()
                 factuality_score = max(factuality_score[0], direct_score)
             else:
                 factuality_score = factuality_score[0]
@@ -124,7 +124,6 @@ class FactualityDetector:
         else:
             generated_rewards = self.compute_direct_scores(raw_batch)
             return generated_rewards
-        
 
     def generate_score_auto_ngram(self, contexts, responses, summac_style=False, 
                                   n_gram_list=[2, 3, 4, 5, 6], n_skip=2, all_possible=False):
