@@ -20,13 +20,14 @@ class ContrastiveJobDescriptionModel(torch.nn.Module):
         
         return self.projection(pooled_output), logits
 
-    def generate(self, input_ids, attention_mask, max_length=128):
+    def generate(self, input_ids, attention_mask, pad_token_id=None, max_length=128):
         return self.transformer.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
             max_new_tokens=128,
             num_return_sequences=1,
             no_repeat_ngram_size=2,
+            pad_token_id=pad_token_id,
             do_sample=True,
             top_k=50,
             top_p=0.95,
