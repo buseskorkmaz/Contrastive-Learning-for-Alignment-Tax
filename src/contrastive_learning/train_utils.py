@@ -14,36 +14,24 @@ def combined_loss(pos_embeddings, neg_embeddings, logits, labels, contrastive_we
     # Combine positive and negative embeddings
     embeddings = torch.cat([pos_embeddings.unsqueeze(1), neg_embeddings], dim=1)  # [batch_size, num_negatives+1, embedding_dim]
 
-    # Compute similarity matrix
-    similarity_matrix = torch.bmm(embeddings, embeddings.transpose(1, 2)) / temperature  # [batch_size, num_negatives+1, num_negatives+1]
+    # Compute similarities between anchors and embeddings
+    anchor_embeddings = pos_embeddings.unsqueeze(1)  # [batch_size, 1, embedding_dim]
+    similarities = torch.bmm(embeddings, anchor_embeddings.transpose(1, 2)).squeeze(2) / temperature  # [batch_size, num_negatives+1]
 
-    # We need to create labels for contrastive loss
-    contrastive_labels = torch.arange(embeddings.size(1), device=embeddings.device).long()
-    contrastive_loss_value = torch.nn.functional.cross_entropy(similarity_matrix.view(-1, embeddings.size(1)), contrastive_labels.repeat(embeddings.size(0)))
+    # Labels for contrastive loss: positives are at index 0
+    contrastive_labels = torch.zeros(pos_embeddings.size(0), dtype=torch.long, device=pos_embeddings.device)
 
-    # Cross-entropy loss
-    logits_reshaped = logits.view(-1, logits.size(-1))
-    labels_reshaped = labels.view(-1)
-    # After reshaping logits and labels
-    print(f"logits_reshaped.min(): {logits_reshaped.min().item()}, logits_reshaped.max(): {logits_reshaped.max().item()}")
-    print(f"labels_reshaped.min(): {labels_reshaped.min().item()}, labels_reshaped.max(): {labels_reshaped.max().item()}")
+    # Compute contrastive loss
+    contrastive_loss_value = torch.nn.functional.cross_entropy(similarities, contrastive_labels)
 
-    if torch.isnan(logits_reshaped).any():
-        print("NaN detected in logits_reshaped")
-    if torch.isinf(logits_reshaped).any():
-        print("Inf detected in logits_reshaped")
-    if torch.isnan(labels_reshaped).any():
-        print("NaN detected in labels_reshaped")
-    if torch.isinf(labels_reshaped).any():
-        print("Inf detected in labels_reshaped")
+    # Reshape logits and labels for cross-entropy loss
+    logits_reshaped = logits.view(-1, logits.size(-1))  # [batch_size * seq_len, vocab_size]
+    labels_reshaped = labels.view(-1)  # [batch_size * seq_len]
 
     # Ensure labels are of type torch.LongTensor
     labels_reshaped = labels_reshaped.long()
-    print(f"Labels dtype: {labels_reshaped.dtype}")
-    invalid_labels = labels_reshaped[(labels_reshaped != -100) & ((labels_reshaped < 0) | (labels_reshaped >= logits.size(-1)))]
-    if invalid_labels.numel() > 0:
-        print(f"Found invalid labels: {invalid_labels}")
 
+    # Compute cross-entropy loss for language modeling
     ce_loss_value = torch.nn.functional.cross_entropy(
         logits_reshaped,
         labels_reshaped,
