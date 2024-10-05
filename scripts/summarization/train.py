@@ -62,7 +62,7 @@ console_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs, factuality_detector, original_val_factuality, original_val_toxicity):
+def train(model, tokenizer, train_loader, val_loader, optimizer, device, config, epochs, factuality_detector, original_val_factuality, original_val_toxicity):
     logger.info(f"Original Validation Factuality Score: {original_val_factuality:.4f}")
     logger.info("Starting training...")
     for epoch in range(epochs):
@@ -74,11 +74,11 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs,
         
         for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}"):
             optimizer.zero_grad()
-            
+        
             # Positive samples
             pos_embeddings, pos_logits = model(
-                batch['pos_combined_ids'].to(device), 
-                batch['pos_combined_attention_mask'].to(device)
+                batch['input_ids'].to(device), 
+                batch['attention_mask'].to(device)
             )
             
             # Negative samples
@@ -90,18 +90,28 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, epochs,
             # Reshape neg_embeddings to (batch_size, num_negatives, embedding_dim)
             embedding_dim = neg_embeddings.shape[-1]
             neg_embeddings = neg_embeddings.view(batch_size, num_negatives, embedding_dim)
-            
+
+            # Get labels
+            labels = batch['labels'].to(device)
+
             # Calculate loss
             loss, contrastive_loss, ce_loss = combined_loss(
-                pos_embeddings, neg_embeddings, pos_logits, batch['pos_target_ids'].to(device)
+                pos_embeddings,
+                neg_embeddings,
+                pos_logits,
+                labels,
+                ce_weight=config["ce_weight"],
             )            
             loss.backward()
+            # to check if there is any exploding gradients
+            # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
-            
+
             total_train_loss += loss.item()
             total_train_contrastive_loss += contrastive_loss.item()
             total_train_ce_loss += ce_loss.item()
-        
+            torch.cuda.empty_cache()
+
         avg_train_loss = total_train_loss / len(train_loader)
         avg_train_contrastive_loss = total_train_contrastive_loss / len(train_loader)
         avg_train_ce_loss = total_train_ce_loss / len(train_loader)
@@ -298,12 +308,27 @@ def main():
     logger.info(f"Original Test Toxicity Score: {original_test_toxicity:.4f}")
 
     # Create DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=4)
-    test_loader = DataLoader(test_dataset, batch_size=4)
+    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=1)
+    test_loader = DataLoader(test_dataset, batch_size=1)
     logger.info("Created datasets")
 
-    optimizer = AdamW(model.parameters(), lr=1e-5)
+    # Create config dictionary
+    config = {
+        "ce_weight": 4,
+        "model_name": model_name,
+        "batch_size": 1,
+        "learning_rate": 1e-3,
+        "epochs": 15,
+        "neg_samples_per_pos": neg_samples_per_pos,
+        "pos_data_option": args.pos_data,
+        "neg_data_option": args.neg_data,
+        "original_val_factuality": original_val_factuality,
+        "original_test_factuality": original_test_factuality
+    }
+
+
+    optimizer = AdamW(model.parameters(), lr=config["learning_rate"])
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info(f"Using device: {device}")
     model.to(device)
@@ -315,8 +340,8 @@ def main():
 
     wandb.config.update({
         "model_name": model_name,
-        "batch_size": 4,
-        "learning_rate": 1e-5,
+        "batch_size": 1,
+        "learning_rate": config["learning_rate"],
         "epochs": 15,
         "neg_samples_per_pos": neg_samples_per_pos,
         "pos_data_option": args.pos_data,
@@ -330,6 +355,7 @@ def main():
         val_loader, 
         optimizer, 
         device, 
+        config,
         epochs=15, 
         factuality_detector=factuality_detector, 
         original_val_factuality=original_val_factuality,
@@ -346,20 +372,6 @@ def main():
     model_path = os.path.join(dir_name, "model.pt")
     torch.save(model.state_dict(), model_path)
     logger.info(f"Model saved as: {model_path}")
-
-    # Create config dictionary
-    config = {
-        "ce_weight": 1.5,
-        "model_name": model_name,
-        "batch_size": 4,
-        "learning_rate": 1e-5,
-        "epochs": 15,
-        "neg_samples_per_pos": neg_samples_per_pos,
-        "pos_data_option": args.pos_data,
-        "neg_data_option": args.neg_data,
-        "original_val_factuality": original_val_factuality,
-        "original_test_factuality": original_test_factuality
-    }
 
     # Save config.json
     config_path = os.path.join(dir_name, "config.json")
