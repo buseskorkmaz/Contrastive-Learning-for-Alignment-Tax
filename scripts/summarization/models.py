@@ -8,7 +8,7 @@ from transformers import pipeline, GPT2Tokenizer, AutoModelForCausalLM, AutoToke
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
 from src.debiasing_algorithms.inlp.models.inlp_model import INLPGPT2LMHeadModel
 from src.debiasing_algorithms.sentence_debiasing.models.sentence_debias_model import SentenceDebiasGPT2LMHeadModel
-from scripts.seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
+from seat.debias.self_debias.modeling import GPT2Wrapper, Llama2Wrapper, Phi2Wrapper
 from src.debiasing_algorithms.cda.models import CDAModel
 from src.debiasing_algorithms.dropout.models import DropoutModel
 
@@ -21,6 +21,10 @@ def init_debiased_model(model_name):
 
     if model_name == "gpt2":
         model = AutoModelForCausalLM.from_pretrained('gpt2', return_dict_in_generate=True).to(device)
+        tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+    elif model_name == "gpt2-tldr":
+        model = AutoModelForCausalLM.from_pretrained('Holarissun/gpt2-sft-tldr', return_dict_in_generate=True).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         tokenizer.pad_token_id = tokenizer.eos_token_id
     elif model_name == "llama2-7b":
