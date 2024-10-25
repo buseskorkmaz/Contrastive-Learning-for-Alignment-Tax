@@ -1,10 +1,10 @@
 {
-    "ce_weight": 1.5,
+    "ce_weight": 1,
     "model_name": "gpt2",
-    "batch_size": 4,
-    "learning_rate": 1e-05,
-    "epochs": 10,
-    "neg_samples_per_pos": 5,
+    "batch_size": 1,
+    "learning_rate": 0.001,
+    "epochs": 15,
+    "neg_samples_per_pos": 1,
     "pos_data_option": [
         "original",
         "bt"
@@ -14,6 +14,6 @@
         "entity_swap",
         "low_confidence"
     ],
-    "original_val_factuality": 0.3779207542735401,
-    "original_test_factuality": 0.39467785318821585
+    "original_val_factuality": 0.3663393546797041,
+    "original_test_factuality": 0.3667731880977744
 }
