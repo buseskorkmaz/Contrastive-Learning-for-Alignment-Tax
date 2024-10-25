@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 import re
 import torch
 from transformers import pipeline
+from tqdm import tqdm
 
 def combine_data(data_list):
     combined = {split: {'source': [], 'target': []} for split in ['train', 'validation', 'test']}
@@ -34,38 +35,57 @@ def preprocess_text(text):
     cleaned_text = re.sub(pattern, "", text, flags=re.DOTALL | re.IGNORECASE)
     return cleaned_text.strip().lower()
 
-def calculate_original_factuality(data, factuality_detector, cache_dir='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/cache', dataset_name='dataset'):
+def calculate_original_factuality(dataset, factuality_detector, cache_dir='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/cache', dataset_name='dataset'):
     # Create cache directory if it doesn't exist
     os.makedirs(cache_dir, exist_ok=True)
     
-    # Define cache file path
-    cache_file = os.path.join(cache_dir, f'factuality_scores_{dataset_name}.json')
+    # Define cache file paths
+    pos_cache_file = os.path.join(cache_dir, f'factuality_scores_{dataset_name}_positive.json')
+    neg_cache_file = os.path.join(cache_dir, f'factuality_scores_{dataset_name}_negative.json')
     
-    # Check if cache file exists
-    if os.path.isfile(cache_file):
-        with open(cache_file, 'r') as f:
-            factuality_scores = json.load(f)
-        total_factuality_score = sum(factuality_scores)
-        num_samples = len(factuality_scores)
-        return total_factuality_score / num_samples
+    # Check if cache files exist
+    pos_scores_exist = os.path.isfile(pos_cache_file)
+    neg_scores_exist = os.path.isfile(neg_cache_file)
+    
+    pos_factuality_scores = []
+    neg_factuality_scores = []
+
+    if pos_scores_exist and neg_scores_exist:
+        with open(pos_cache_file, 'r') as f:
+            pos_factuality_scores = json.load(f)
+        with open(neg_cache_file, 'r') as f:
+            neg_factuality_scores = json.load(f)
     else:
-        # Compute factuality scores
-        total_factuality_score = 0
-        num_samples = 0
-        factuality_scores = []
-        for source, target in zip(data['source'], data['target']):
-            _, _, factuality_score = factuality_detector.generate_score(
-                [preprocess_text(source)], [preprocess_text(target)], summac_style=True
-            )
-            # Convert numpy.float32 to float
-            factuality_score = float(factuality_score)
-            factuality_scores.append(factuality_score)
-            total_factuality_score += factuality_score
-            num_samples += 1
-        # Save scores to cache file
-        with open(cache_file, 'w') as f:
-            json.dump(factuality_scores, f)
-        return total_factuality_score / num_samples
+        for sample in tqdm(dataset, desc="Calculating Original Factuality"):
+            src_text = sample['src_text']
+            
+            # Positive targets
+            for target in sample['pos_texts']:
+                _, _, factuality_score = factuality_detector.generate_score(
+                    [preprocess_text(src_text)], [preprocess_text(target)], summac_style=True
+                )
+                factuality_score = float(factuality_score)
+                pos_factuality_scores.append(factuality_score)
+            
+            # Negative targets
+            for target in sample['neg_texts']:
+                _, _, factuality_score = factuality_detector.generate_score(
+                    [preprocess_text(src_text)], [preprocess_text(target)], summac_style=True
+                )
+                factuality_score = float(factuality_score)
+                neg_factuality_scores.append(factuality_score)
+
+        # Save scores to cache files
+        with open(pos_cache_file, 'w') as f:
+            json.dump(pos_factuality_scores, f)
+        with open(neg_cache_file, 'w') as f:
+            json.dump(neg_factuality_scores, f)
+    
+    # Calculate average factuality scores
+    avg_pos_factuality = sum(pos_factuality_scores) / len(pos_factuality_scores) if pos_factuality_scores else 0
+    avg_neg_factuality = sum(neg_factuality_scores) / len(neg_factuality_scores) if neg_factuality_scores else 0
+
+    return avg_pos_factuality, avg_neg_factuality
 
 def calculate_original_fairness(data, fairness_evaluator):
     total_fairness_score = 0
@@ -77,9 +97,12 @@ def calculate_original_fairness(data, fairness_evaluator):
         num_samples += 1
     return total_fairness_score / (num_samples // 10)
 
-def read_files(directory, logger):
+def read_files(directory, logger, splits=None):
     data = {}
-    for split in ['train']:
+    if not splits:
+        splits = ['train']
+
+    for split in splits:
         try:
             data[split] = {
                 'source': open(os.path.join(directory, f'{split}.source'), 'r').readlines(),
@@ -90,40 +113,65 @@ def read_files(directory, logger):
             logger.info(f"Couldn't find {directory}")
     return data
 
+def load_indices(index_file):
+    indices = []
+    with open(index_file, 'r') as f:
+        for line in f:
+            idx_list = [int(idx) for idx in line.strip().split()]
+            indices.append(idx_list)
+    return indices
+
 def evaluate_toxicity(text):
     toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=0 if torch.cuda.is_available() else -1)
     results = toxicity_model(text, batch_size=1, truncation=True, max_length=512)
     return results[0]['score']
 
-def calculate_original_toxicity(data, cache_dir='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/cache', dataset_name='dataset'):
+def calculate_original_toxicity(dataset, cache_dir='/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/cache', dataset_name='dataset'):
     # Create cache directory if it doesn't exist
     os.makedirs(cache_dir, exist_ok=True)
+    # Define cache file paths
+    pos_cache_file = os.path.join(cache_dir, f'toxicity_scores_{dataset_name}_positive.json')
+    neg_cache_file = os.path.join(cache_dir, f'toxicity_scores_{dataset_name}_negative.json')
     
-    # Define cache file path
-    cache_file = os.path.join(cache_dir, f'toxicity_scores_{dataset_name}.json')
+    # Check if cache files exist
+    pos_scores_exist = os.path.isfile(pos_cache_file)
+    neg_scores_exist = os.path.isfile(neg_cache_file)
     
-    # Check if cache file exists
-    if os.path.isfile(cache_file):
-        with open(cache_file, 'r') as f:
-            toxicity_scores = json.load(f)
-        total_toxicity_score = sum(toxicity_scores)
-        num_samples = len(toxicity_scores)
-        return total_toxicity_score / num_samples
+    pos_toxicity_scores = []
+    neg_toxicity_scores = []
+
+    if pos_scores_exist and neg_scores_exist:
+        with open(pos_cache_file, 'r') as f:
+            pos_toxicity_scores = json.load(f)
+        with open(neg_cache_file, 'r') as f:
+            neg_toxicity_scores = json.load(f)
     else:
-        # Compute toxicity scores
-        total_toxicity_score = 0
-        num_samples = 0
-        toxicity_scores = []
-        for target in data['target']:
-            toxicity_score = evaluate_toxicity(target)
-            toxicity_score = float(toxicity_score)
-            toxicity_scores.append(toxicity_score)
-            total_toxicity_score += toxicity_score
-            num_samples += 1
-        # Save scores to cache file
-        with open(cache_file, 'w') as f:
-            json.dump(toxicity_scores, f)
-        return total_toxicity_score / num_samples
+        toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=0 if torch.cuda.is_available() else -1)
+        for sample in tqdm(dataset, desc="Calculating Original Toxicity"):
+            # Positive targets
+            for target in sample['pos_texts']:
+                toxicity_score = toxicity_model([target], batch_size=1, truncation=True, max_length=512)[0]['score'][0]
+                toxicity_score = float(toxicity_score)
+                pos_toxicity_scores.append(toxicity_score)
+            
+            # Negative targets
+            for target in sample['neg_texts']:
+                toxicity_score = toxicity_model([target], batch_size=1, truncation=True, max_length=512)[0]['score'][0]
+                toxicity_score = float(toxicity_score)
+                neg_toxicity_scores.append(toxicity_score)
+
+        # Save scores to cache files
+        with open(pos_cache_file, 'w') as f:
+            json.dump(pos_toxicity_scores, f)
+        with open(neg_cache_file, 'w') as f:
+            json.dump(neg_toxicity_scores, f)
+    
+    # Calculate average toxicity scores
+    avg_pos_toxicity = sum(pos_toxicity_scores) / len(pos_toxicity_scores) if pos_toxicity_scores else 0
+    avg_neg_toxicity = sum(neg_toxicity_scores) / len(neg_toxicity_scores) if neg_toxicity_scores else 0
+
+    return avg_pos_toxicity, avg_neg_toxicity
+
 
 def generate_dataset_name(data_type, data_options):
     # data_type: 'pos' or 'neg'

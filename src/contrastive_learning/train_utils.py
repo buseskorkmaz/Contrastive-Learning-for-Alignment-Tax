@@ -11,18 +11,18 @@ def preprocess_text(text):
     return cleaned_text.strip().lower()
 
 def combined_loss(pos_embeddings, neg_embeddings, logits, labels, contrastive_weight=1, ce_weight=1, temperature=0.7):
-    # Combine positive and negative embeddings
-    embeddings = torch.cat([pos_embeddings.unsqueeze(1), neg_embeddings], dim=1)  # [batch_size, num_negatives+1, embedding_dim]
+    # # Combine positive and negative embeddings
+    # embeddings = torch.cat([pos_embeddings.unsqueeze(1), neg_embeddings], dim=1) # [batch_size, num_negatives+1, embedding_dim]
 
-    # Compute similarities between anchors and embeddings
-    anchor_embeddings = pos_embeddings.unsqueeze(1)  # [batch_size, 1, embedding_dim]
-    similarities = torch.bmm(embeddings, anchor_embeddings.transpose(1, 2)).squeeze(2) / temperature  # [batch_size, num_negatives+1]
+    # # Compute similarities between anchors and embeddings
+    # anchor_embeddings = pos_embeddings.unsqueeze(1)  # [batch_size, 1, embedding_dim]
+    # similarities = torch.bmm(embeddings, anchor_embeddings.transpose(1, 2)).squeeze(2) / temperature  # [batch_size, num_negatives+1]
 
-    # Labels for contrastive loss: positives are at index 0
-    contrastive_labels = torch.zeros(pos_embeddings.size(0), dtype=torch.long, device=pos_embeddings.device)
+    # # Labels for contrastive loss: positives are at index 0
+    # contrastive_labels = torch.zeros(pos_embeddings.size(0), dtype=torch.long, device=pos_embeddings.device)
 
-    # Compute contrastive loss
-    contrastive_loss_value = torch.nn.functional.cross_entropy(similarities, contrastive_labels)
+    # # Compute contrastive loss
+    # contrastive_loss_value = torch.nn.functional.cross_entropy(similarities, contrastive_labels)
 
     # Reshape logits and labels for cross-entropy loss
     logits_reshaped = logits.view(-1, logits.size(-1))  # [batch_size * seq_len, vocab_size]
@@ -39,7 +39,8 @@ def combined_loss(pos_embeddings, neg_embeddings, logits, labels, contrastive_we
     )
 
     # Combined loss
-    loss = contrastive_weight * contrastive_loss_value + ce_weight * ce_loss_value
+    contrastive_loss_value = 0
+    loss = ce_loss_value
     return loss, contrastive_loss_value, ce_loss_value
 
 def evaluate_w_fairness(model, tokenizer, data_loader, device, diversity_evaluator, factuality_detector, logger, temperature=0.5):

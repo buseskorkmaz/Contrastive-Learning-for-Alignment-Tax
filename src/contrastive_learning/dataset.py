@@ -3,7 +3,10 @@ import torch
 from torch.utils.data import Dataset
 
 class ContrastiveDataset(Dataset):
-    def __init__(self, pos_data, neg_data, tokenizer, max_length, neg_samples_per_pos=4):
+    def __init__(self, pos_data, neg_data, tokenizer, max_length, neg_samples_per_pos=4, seed=42):
+        random.seed(seed)
+        torch.manual_seed(seed)
+
         self.pos_data = pos_data
         self.neg_data = neg_data
         self.tokenizer = tokenizer
@@ -194,3 +197,57 @@ class EvaluationDataset(Dataset):
             'pos_source_ids': pos_source_ids,  # For generation
             'pos_source_attention_mask': pos_source_attention_mask,  # For generation
         }
+
+# from torch.utils.data import Dataset
+
+# class SummarizationDataset(Dataset):
+#     def __init__(self, data, tokenizer, max_length):
+#         self.sources = data['source']
+#         self.targets = data['target']
+#         self.tokenizer = tokenizer
+#         self.max_length = max_length
+
+#     def __len__(self):
+#         return len(self.sources)
+
+#     def __getitem__(self, idx):
+#         source = self.sources[idx].strip()
+#         target = self.targets[idx].strip()
+
+#         # Concatenate source and target with the tokenizer's eos_token
+#         input_text = source + self.tokenizer.eos_token + target + self.tokenizer.eos_token
+
+#         # Tokenize the concatenated text
+#         encoding = self.tokenizer(
+#             input_text,
+#             max_length=self.max_length,
+#             padding='max_length',
+#             truncation=True,
+#             return_tensors='pt'
+#         )
+
+#         input_ids = encoding['input_ids'].squeeze()
+#         attention_mask = encoding['attention_mask'].squeeze()
+
+#         # Create labels by copying input_ids
+#         labels = input_ids.detach().clone()
+
+#         # Tokenize source to find its length
+#         source_encoding = self.tokenizer(
+#             source + self.tokenizer.eos_token,
+#             max_length=self.max_length,
+#             truncation=True,
+#             return_tensors='pt'
+#         )
+#         source_len = source_encoding['input_ids'].size(1)
+
+#         # Mask source tokens in labels
+#         labels[:source_len] = -100
+
+#         return {
+#             'input_ids': input_ids,
+#             'attention_mask': attention_mask,
+#             'labels': labels,
+#             'source_text': source,
+#             'target_text': target
+#         }
