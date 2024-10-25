@@ -116,7 +116,7 @@ def main():
             model, tokenizer = None, None
 
         for i, item in tqdm(enumerate(dataset), total=len(dataset), desc=f"Processing {model_name}"):
-            content = "Summarize:\n" + item['content'] + "Summary:"
+            content = item['content']
             original_summary = item['summary']
 
             if model_name != "original":
