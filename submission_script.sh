@@ -1,4 +1,4 @@
-#PBS -l walltime=1:00:00
+#PBS -l walltime=1:30:00
 #PBS -l select=1:ncpus=4:mem=80gb:ngpus=1:gpu_type=A100
 
 echo "Host - $HOSTNAME"
@@ -59,17 +59,33 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH=$HOME/miniconda3/lib/
 
 # Install dependencies.
 cd $HOME/factual-bias-mitigation/
-PYTHON_SCRIPT=/gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/train.py
-NEG_OPTION=all
+NEG_OPTION=original
 COMBO_LOG_DIR="/gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/output/logs/train/pos_all_neg_${NEG_OPTION}"
 mkdir -p ${COMBO_LOG_DIR}
-python /gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/train.py --pos_data all --neg_data original
-# JOB_CMD="qsub -queue x86_6h -mem 80g -require a100_80gb -cores 4+1 \
-#                -e ${COMBO_LOG_DIR}/error.log \
-#                -o ${COMBO_LOG_DIR}/output.log \
-#                python ${PYTHON_SCRIPT} \
-#                --pos_data all \
-#                --neg_data ${NEG_OPTION}"
-   
-# echo "Submitting job: $JOB_CMD"
-# eval $JOB_CMD
+# python /gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/train.py --pos_data all --neg_data original
+# python /gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/summarize.py --pos_data all
+
+# python /gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/evaluate.py --model_name gpt2-tldr
+
+# python /gpfs/home/bsk18/factual-bias-mitigation/src/contrastive_learning/index_map.py \
+#     --data_dir /gpfs/home/bsk18/factual-bias-mitigation/data/tldr/train \
+#     --pos_data_options original bt  \
+#     --neg_data_options original \
+#     --splits train \
+#     --output_dir /gpfs/home/bsk18/factual-bias-mitigation/data/tldr/indices/pos_all_neg_original
+
+# python /gpfs/home/bsk18/factual-bias-mitigation/src/contrastive_learning/index_map.py \
+#     --data_dir /gpfs/home/bsk18/factual-bias-mitigation/data/tldr/validation \
+#     --pos_data_options original \
+#     --neg_data_options original \
+#     --splits validation \
+#     --output_dir /gpfs/home/bsk18/factual-bias-mitigation/data/tldr/indices/pos_all_neg_original
+
+# python /gpfs/home/bsk18/factual-bias-mitigation/src/contrastive_learning/index_map.py \
+#     --data_dir /gpfs/home/bsk18/factual-bias-mitigation/data/tldr/test \
+#     --pos_data_options original \
+#     --neg_data_options original \
+#     --splits test \
+#     --output_dir /gpfs/home/bsk18/factual-bias-mitigation/data/tldr/indices/pos_all_neg_original
+
+# python /gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/contrastive_train.py --pos_data all --neg_data original
