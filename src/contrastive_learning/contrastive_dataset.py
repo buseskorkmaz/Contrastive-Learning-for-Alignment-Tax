@@ -105,7 +105,6 @@ class ContrastiveTranslationDataset(Dataset):
 
         return sample
 
-
 def contrastive_collate_fn(samples):
     if len(samples) == 0:
         return {}
@@ -116,11 +115,12 @@ def contrastive_collate_fn(samples):
 
     batch_size = src_input_ids.size(0)
 
-    # Concatenate positive and negative targets
+    # Initialize lists
     contrast_input_ids_list = []
     contrast_ne_masks_list = []
     src_select_index = []
     cross_entropy_pos = []
+
     accumulate_cnt = 0
 
     for i, s in enumerate(samples):
@@ -128,30 +128,35 @@ def contrastive_collate_fn(samples):
         pos_input_ids_list = s['pos_input_ids_list']
         pos_ne_masks = s['pos_ne_masks']
         num_pos = len(pos_input_ids_list)
+
+        # Add positive samples
         contrast_input_ids_list.extend(pos_input_ids_list)
         contrast_ne_masks_list.extend(pos_ne_masks)
         src_select_index.extend([i] * num_pos)
+
+        # Collect indices of all positive samples
+        pos_indices = list(range(accumulate_cnt, accumulate_cnt + num_pos))
+        cross_entropy_pos.extend(pos_indices)
+
         accumulate_cnt += num_pos
-        cross_entropy_pos.append(accumulate_cnt - 1)  # Last positive target
 
         # Negative targets
         neg_input_ids_list = s['neg_input_ids_list']
         neg_ne_masks = s['neg_ne_masks']
         num_neg = len(neg_input_ids_list)
+
+        # Add negative samples
         contrast_input_ids_list.extend(neg_input_ids_list)
         contrast_ne_masks_list.extend(neg_ne_masks)
         src_select_index.extend([i] * num_neg)
+
         accumulate_cnt += num_neg
 
     # Stack contrast targets
     contrast_input_ids = torch.stack(contrast_input_ids_list)
     contrast_ne_masks = torch.stack(contrast_ne_masks_list)
     src_select_index = torch.tensor(src_select_index, dtype=torch.long)
-
-    # Prepare contrast_target_input_ids (the last positive target from each sample)
-    contrast_target_input_ids = torch.stack([
-        s['pos_input_ids_list'][-1] for s in samples
-    ])
+    cross_entropy_pos = torch.tensor(cross_entropy_pos, dtype=torch.long)
 
     # Prepare valid_contrast and positive_contrast matrices
     total_contrast_samples = contrast_input_ids.size(0)
@@ -184,7 +189,6 @@ def contrastive_collate_fn(samples):
         'src_attention_mask': src_attention_mask,
         'contrast_input_ids': contrast_input_ids,
         'contrast_ne_masks': contrast_ne_masks,
-        'contrast_target_input_ids': contrast_target_input_ids,
         'src_select_index': src_select_index,
         'valid_contrast': valid_contrast,
         'positive_contrast': positive_contrast,

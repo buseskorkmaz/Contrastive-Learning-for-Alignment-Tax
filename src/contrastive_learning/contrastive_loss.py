@@ -3,111 +3,83 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class ContrastiveLoss(nn.Module):
-    def __init__(self, alpha=1.0, tau=1.0, padding_idx=0):
+    def __init__(self, tau=1.0):
         super(ContrastiveLoss, self).__init__()
-        self.alpha = alpha  # Weight for the contrastive loss
-        self.tau = tau      # Temperature parameter for contrastive loss
-        self.padding_idx = padding_idx  # Padding token ID
+        self.tau = tau  # Temperature parameter for contrastive loss
 
-        # Cross-entropy loss for language modeling
-        self.ce_loss_fct = nn.CrossEntropyLoss(ignore_index=padding_idx)
-
-    def forward(self, lm_logits, target_ids, hidden_states, sample):
+    def forward(self, hidden_states, sample):
         """
-        lm_logits: (batch_size, seq_len, vocab_size)
-        target_ids: (batch_size, seq_len)
-        hidden_states: (batch_size, seq_len, hidden_size)
-        sample: dictionary containing necessary tensors for contrastive loss
-        """
-        # Language modeling loss
-        lm_loss = self.ce_loss_fct(
-            lm_logits.view(-1, lm_logits.size(-1)),  # Flatten to (batch_size * seq_len, vocab_size)
-            target_ids.view(-1)                      # Flatten to (batch_size * seq_len)
-        )
-
-        # Contrastive loss
-        contrastive_loss = self.compute_contrastive_loss(hidden_states, sample)
-
-        # Total loss
-        loss = lm_loss + self.alpha * contrastive_loss
-
-        return loss, lm_loss, contrastive_loss
-
-    def compute_contrastive_loss(self, hidden_states, sample):
-        """
-        Computes the contrastive loss as per your original code.
-
-        hidden_states: (batch_size, seq_len, hidden_size)
+        hidden_states: (N, seq_len, hidden_size)
         sample: dictionary containing 'contrast_ne', 'valid_contrast', 'positive_contrast'
         """
-        contrast_ne = sample.get("contrast_ne", None)  # (batch_size, seq_len)
-        batch_size = hidden_states.size(0)
-
+        contrast_ne = sample.get("contrast_ne", None)  # (N, seq_len)
         if contrast_ne is not None:
             # Masked fill positions where contrast_ne == 0
-            ne_mask = (contrast_ne == 0).unsqueeze(-1)  # (batch_size, seq_len, 1)
-            ne_representation = hidden_states.masked_fill(ne_mask, 0)  # B x T x C
+            ne_mask = (contrast_ne == 0).unsqueeze(-1)  # (N, seq_len, 1)
+            ne_representation = hidden_states.masked_fill(ne_mask, 0)  # N x T x C
 
             # Sum over time dimension
-            representation = ne_representation.sum(dim=1)  # B x C
+            representation = ne_representation.sum(dim=1)  # N x C
 
             # Compute denominator (number of non-zero positions per sample)
-            representation_ne_denom = contrast_ne.sum(dim=1, keepdim=True)  # B x 1
+            representation_ne_denom = contrast_ne.sum(dim=1, keepdim=True)  # N x 1
 
             # Avoid division by zero
-            representation_ne_denom = representation_ne_denom.masked_fill(representation_ne_denom == 0, 1e-8)
+            eps = 1e-8
+            representation_ne_denom = representation_ne_denom.masked_fill(representation_ne_denom == 0, eps)
 
             # Normalize representation
             representation = representation / representation_ne_denom
         else:
             # Use last token's hidden state
-            representation = hidden_states[:, -1, :]  # B x C
-
-        # Compute norms
-        representation_n = representation.norm(dim=-1, keepdim=True)  # B x 1
-
-        # Avoid division by zero
-        representation_n = representation_n.masked_fill(representation_n == 0, 1e-8)
+            representation = hidden_states[:, -1, :]  # N x C
 
         # Normalize representations
-        representation_norm = representation / representation_n
+        representation_norm = F.normalize(representation, p=2, dim=1)  # N x C
 
         # Compute similarity matrix
-        similarity = torch.matmul(representation_norm, representation_norm.transpose(0, 1))  # B x B
+        similarity = torch.matmul(representation_norm, representation_norm.transpose(0, 1))  # N x N
 
         # Divide by temperature
         similarity = similarity / self.tau
 
-        # Exponentiate similarities
-        similarity = torch.exp(similarity)
-
         # Mask invalid contrasts
-        valid_contrast = sample["valid_contrast"]  # B x B
-        similarity = similarity.masked_fill(~valid_contrast, 0.0)
+        valid_contrast = sample["valid_contrast"].to(similarity.device)  # N x N
 
-        # Compute denominator
-        denominator = similarity.sum(dim=-1, keepdim=True)  # B x 1
+        # Replace invalid entries with a large negative value
+        LARGE_NEGATIVE = -1e9
+        similarity = similarity.masked_fill(~valid_contrast, LARGE_NEGATIVE)
 
-        # Avoid division by zero
-        denominator = denominator.masked_fill(denominator == 0, 1e-8)
+        # **Add a small value to the diagonal to ensure at least one valid entry per row**
+        similarity = similarity + torch.eye(similarity.size(0), device=similarity.device) * eps
 
-        # Compute denom_similarity
-        denom_similarity = similarity / denominator  # B x B
+        # For numerical stability, subtract the max value from each row
+        max_sim, _ = torch.max(similarity, dim=1, keepdim=True)
+        similarity = similarity - max_sim.detach()
+
+        # Compute log probabilities
+        exp_similarity = torch.exp(similarity)
+        sum_exp = exp_similarity.sum(dim=1, keepdim=True)
+
+        # Avoid division by zero in log
+        sum_exp = sum_exp.masked_fill(sum_exp == 0, eps)
+
+        log_probs = similarity - torch.log(sum_exp)
+
+        # Check for non-finite values
+        if not torch.isfinite(similarity).all():
+            print("Non-finite values in similarity matrix")
+        if not torch.isfinite(log_probs).all():
+            print("Non-finite values in log probabilities")
 
         # Select positive contrasts
-        positive_contrast = sample["positive_contrast"]  # B x B
-        loss_values = denom_similarity[positive_contrast]  # N_positives
+        positive_contrast = sample["positive_contrast"].to(log_probs.device)  # N x N
+        loss_values = -log_probs[positive_contrast]  # K positive pairs
 
-        # Compute negative log likelihood
-        loss = -torch.log(loss_values)
-
-        # Sum losses
-        loss_denom = positive_contrast.sum()  # Scalar
-
-        # Avoid division by zero
-        if loss_denom == 0:
-            loss_denom = torch.tensor(1e-8, device=loss.device)
-
-        loss = loss.sum() / loss_denom
+        # Handle case where loss_values might be empty
+        if loss_values.numel() == 0:
+            loss = torch.tensor(0.0, requires_grad=True).to(log_probs.device)
+        else:
+            loss = loss_values.mean()
 
         return loss

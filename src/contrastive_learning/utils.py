@@ -122,7 +122,7 @@ def load_indices(index_file):
     return indices
 
 def evaluate_toxicity(text):
-    toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=0 if torch.cuda.is_available() else -1)
+    toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=-1)
     results = toxicity_model(text, batch_size=1, truncation=True, max_length=512)
     return results[0]['score']
 
@@ -146,19 +146,28 @@ def calculate_original_toxicity(dataset, cache_dir='/gpfs/home/bsk18/factual-bia
         with open(neg_cache_file, 'r') as f:
             neg_toxicity_scores = json.load(f)
     else:
-        toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=0 if torch.cuda.is_available() else -1)
-        for sample in tqdm(dataset, desc="Calculating Original Toxicity"):
-            # Positive targets
-            for target in sample['pos_texts']:
-                toxicity_score = toxicity_model([target], batch_size=1, truncation=True, max_length=512)[0]['score'][0]
-                toxicity_score = float(toxicity_score)
-                pos_toxicity_scores.append(toxicity_score)
-            
-            # Negative targets
-            for target in sample['neg_texts']:
-                toxicity_score = toxicity_model([target], batch_size=1, truncation=True, max_length=512)[0]['score'][0]
-                toxicity_score = float(toxicity_score)
-                neg_toxicity_scores.append(toxicity_score)
+        toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=-1)
+        
+        # Collect all positive and negative texts
+        pos_texts = []
+        neg_texts = []
+        for sample in tqdm(dataset, desc="Collecting Texts for Toxicity Evaluation"):
+            pos_texts.extend(sample['pos_texts'])
+            neg_texts.extend(sample['neg_texts'])
+        
+        # Evaluate toxicity in batches
+        batch_size = 32  # Adjust as needed
+        for i in tqdm(range(0, len(pos_texts), batch_size), desc="Evaluating Positive Toxicity"):
+            batch = pos_texts[i:i+batch_size]
+            outputs = toxicity_model(batch, truncation=True, max_length=512)
+            scores = [output['score'] for output in outputs]
+            pos_toxicity_scores.extend(scores)
+        
+        for i in tqdm(range(0, len(neg_texts), batch_size), desc="Evaluating Negative Toxicity"):
+            batch = neg_texts[i:i+batch_size]
+            outputs = toxicity_model(batch, truncation=True, max_length=512)
+            scores = [output['score'] for output in outputs]
+            neg_toxicity_scores.extend(scores)
 
         # Save scores to cache files
         with open(pos_cache_file, 'w') as f:
