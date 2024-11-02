@@ -108,7 +108,7 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, config,
             optimizer.step()
 
             total_train_loss += loss.item()
-            total_train_contrastive_loss += contrastive_loss.item()
+            # total_train_contrastive_loss += contrastive_loss.item()
             total_train_ce_loss += ce_loss.item()
             torch.cuda.empty_cache()
 
@@ -220,7 +220,7 @@ def main():
     model = ContrastiveJobDescriptionModel(model, tokenizer)
     logger.info(f"Initialized model: {model_name}")
 
-    neg_samples_per_pos = 5  # You can adjust this number
+    neg_samples_per_pos = 1  # You can adjust this number
     # Initialize datasets
     train_dataset = ContrastiveDataset(pos_data['train'], neg_data['train'], tokenizer, max_length=512, neg_samples_per_pos=neg_samples_per_pos)
     
@@ -315,7 +315,7 @@ def main():
 
     # Create config dictionary
     config = {
-        "ce_weight": 4,
+        "ce_weight": 1,
         "model_name": model_name,
         "batch_size": 1,
         "learning_rate": 1e-3,

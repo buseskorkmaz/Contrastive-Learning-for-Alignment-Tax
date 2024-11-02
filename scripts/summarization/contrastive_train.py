@@ -6,6 +6,7 @@ import random
 import argparse
 from datetime import datetime
 from tqdm import tqdm
+from transformers import pipeline
 
 import torch
 from torch.utils.data import DataLoader
@@ -59,13 +60,14 @@ console_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-def train(model, tokenizer, train_loader, val_loader, optimizer, device, config, epochs, factuality_detector, original_val_factuality, original_val_toxicity):
+def preprocess_text(text):
+    return text.strip()
+
+def train(model, tokenizer, train_loader, val_loader, optimizer, device, config, epochs, factuality_detector, original_val_factuality, original_val_toxicity, criterion):
     logger.info(f"Original Validation Factuality Score: {original_val_factuality:.4f}")
     logger.info("Starting training...")
     criterion = ContrastiveLoss(
-        alpha=config["contrastive_weight"],
         tau=config["tau"],
-        padding_idx=tokenizer.pad_token_id
     )
     
     for epoch in range(epochs):
@@ -78,35 +80,51 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, config,
             optimizer.zero_grad()
         
             # Move tensors to device
-            input_ids = batch['contrast_input_ids'].to(device)
+            input_ids = batch['contrast_input_ids'].to(device)  # [N_contrast_samples, seq_len]
             attention_mask = (input_ids != tokenizer.pad_token_id).long().to(device)
-            target_ids = batch['contrast_target_input_ids'].to(device)
             contrast_ne_masks = batch['contrast_ne_masks'].to(device)
             valid_contrast = batch['valid_contrast'].to(device)
             positive_contrast = batch['positive_contrast'].to(device)
+            
+            # Forward pass
+            outputs = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                output_hidden_states=True,
+                return_dict=True
+            )
+            
+            lm_logits = outputs['logits']  # Instead of outputs.logits
+            hidden_states = outputs['hidden_states'][-1]  # Instead of outputs.hidden_states[-1]
+            
+            # Compute Cross-Entropy Loss on Positive Samples
+            positive_indices = torch.tensor(batch['cross_entropy_pos']).to(device)
+            positive_logits = lm_logits[positive_indices]
+            positive_input_ids = input_ids[positive_indices]
+            
+            shift_logits = positive_logits[..., :-1, :].contiguous()
+            shift_labels = positive_input_ids[..., 1:].contiguous()
+            
+            loss_fct = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
+            lm_loss = loss_fct(
+                shift_logits.view(-1, shift_logits.size(-1)),
+                shift_labels.view(-1)
+            )
+            
+            # Compute Contrastive Loss
             sample = {
                 'contrast_ne': contrast_ne_masks,
                 'valid_contrast': valid_contrast,
                 'positive_contrast': positive_contrast
             }
             
-            outputs = model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                labels=target_ids,
-                output_hidden_states=True,
-                return_dict=True
-            )
-            
-            lm_logits = outputs.logits
-            hidden_states = outputs.hidden_states[-1]
-            
-            loss, lm_loss, contrastive_loss = criterion(
-                lm_logits=lm_logits,
-                target_ids=target_ids,
+            contrastive_loss = criterion(
                 hidden_states=hidden_states,
                 sample=sample
             )
+            
+            # Combine Losses
+            loss = lm_loss + config["contrastive_weight"] * contrastive_loss
             
             loss.backward()
             optimizer.step()
@@ -116,14 +134,15 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, config,
             total_train_ce_loss += lm_loss.item()
             torch.cuda.empty_cache()
         
+        # Compute average losses
         avg_train_loss = total_train_loss / len(train_loader)
         avg_train_contrastive_loss = total_train_contrastive_loss / len(train_loader)
         avg_train_ce_loss = total_train_ce_loss / len(train_loader)
         
         # Validation
         val_loss, val_contrastive_loss, val_ce_loss, val_factuality, val_toxicity = evaluate_w_toxicity(
-            model, tokenizer, val_loader, device, factuality_detector, logger, criterion
-        )
+        model, tokenizer, val_loader, device, factuality_detector, logger, criterion, config)
+
         
         # Log metrics to wandb
         wandb.log({
@@ -152,8 +171,8 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, config,
     
     # Final evaluation
     final_val_loss, final_val_contrastive_loss, final_val_ce_loss, final_val_factuality, final_val_toxicity = evaluate_w_toxicity(
-        model, tokenizer, val_loader, device, factuality_detector, logger, criterion
-    )
+        model, tokenizer, val_loader, device, factuality_detector, logger, criterion, config)
+    
     logger.info("Final Validation Results:")
     logger.info(f"Loss: {final_val_loss:.4f}, Contrastive Loss: {final_val_contrastive_loss:.4f}, CE Loss: {final_val_ce_loss:.4f}")
     logger.info(f"Factuality Score: {final_val_factuality:.4f}")
@@ -161,7 +180,7 @@ def train(model, tokenizer, train_loader, val_loader, optimizer, device, config,
     logger.info(f"Toxicity Score: {final_val_toxicity:.4f}")
     logger.info(f"Toxicity Improvement: {original_val_toxicity - final_val_toxicity:.4f}")
 
-def evaluate_w_toxicity(model, tokenizer, val_loader, device, factuality_detector, logger, criterion):
+def evaluate_w_toxicity(model, tokenizer, val_loader, device, factuality_detector, logger, criterion, config):
     model.eval()
     total_val_loss = 0
     total_val_contrastive_loss = 0
@@ -170,70 +189,113 @@ def evaluate_w_toxicity(model, tokenizer, val_loader, device, factuality_detecto
     total_toxicity = 0
     num_samples = 0
 
+    # Initialize toxicity model on CPU
+    toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=-1)
+
     # Lists to store references, hypotheses, and source texts
     all_references = []
     all_hypotheses = []
-    all_sources = []  # To store source texts
+    all_sources = []
 
     with torch.no_grad():
         for batch in tqdm(val_loader, desc="Evaluating"):
             # Prepare data
             input_ids = batch['contrast_input_ids'].to(device)
             attention_mask = (input_ids != tokenizer.pad_token_id).long().to(device)
-            target_ids = batch['contrast_target_input_ids'].to(device)
             contrast_ne_masks = batch['contrast_ne_masks'].to(device)
             valid_contrast = batch['valid_contrast'].to(device)
             positive_contrast = batch['positive_contrast'].to(device)
+
+            # Forward pass
+            outputs = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                output_hidden_states=True,
+                return_dict=True
+            )
+
+            lm_logits = outputs['logits']
+            hidden_states = outputs['hidden_states'][-1]
+
+            # Compute Cross-Entropy Loss on Positive Samples
+            positive_indices_cpu = torch.tensor(batch['cross_entropy_pos'], dtype=torch.long)
+            positive_indices = positive_indices_cpu.to(device)
+
+            positive_logits = lm_logits[positive_indices]
+            positive_input_ids = input_ids[positive_indices]
+
+            shift_logits = positive_logits[..., :-1, :].contiguous()
+            shift_labels = positive_input_ids[..., 1:].contiguous()
+
+            loss_fct = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
+            lm_loss = loss_fct(
+                shift_logits.view(-1, shift_logits.size(-1)),
+                shift_labels.view(-1)
+            )
+
+            # Compute Contrastive Loss
             sample = {
                 'contrast_ne': contrast_ne_masks,
                 'valid_contrast': valid_contrast,
                 'positive_contrast': positive_contrast
             }
-            
-            outputs = model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                labels=target_ids,
-                output_hidden_states=True,
-                return_dict=True
-            )
-            
-            lm_logits = outputs.logits
-            hidden_states = outputs.hidden_states[-1]
-            
-            loss, lm_loss, contrastive_loss = criterion(
-                lm_logits=lm_logits,
-                target_ids=target_ids,
+
+            contrastive_loss = criterion(
                 hidden_states=hidden_states,
                 sample=sample
             )
-            
+
+            # Combine Losses
+            loss = lm_loss + config["contrastive_weight"] * contrastive_loss
+
             total_val_loss += loss.item()
             total_val_contrastive_loss += contrastive_loss.item()
             total_val_ce_loss += lm_loss.item()
-            
-            # Evaluate factuality and toxicity
-            generated_ids = torch.argmax(lm_logits, dim=-1)
-            generated_texts = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-            target_texts = tokenizer.batch_decode(target_ids, skip_special_tokens=True)
-            source_ids = batch['src_input_ids']  # Get source input IDs
+
+            # Generate texts for evaluation
+            generated_texts = tokenizer.batch_decode(
+                torch.argmax(positive_logits, dim=-1).detach().cpu(),
+                skip_special_tokens=True
+            )
+
+            target_texts = tokenizer.batch_decode(
+                positive_input_ids.detach().cpu(),
+                skip_special_tokens=True
+            )
+
+            # Retrieve source_ids without moving to GPU
+            source_indices = batch['src_select_index'][positive_indices_cpu]
+            source_ids = batch['src_input_ids'][source_indices]
             source_texts = tokenizer.batch_decode(source_ids, skip_special_tokens=True)
-            
+
             # Store references, hypotheses, and sources
             all_hypotheses.extend(generated_texts)
             all_references.extend(target_texts)
             all_sources.extend(source_texts)
-            
-            # Factuality scores
-            factuality_scores = factuality_detector.evaluate(generated_texts)
-            total_factuality += sum(factuality_scores)
-            
-            # Toxicity scores
-            toxicity_scores = evaluate_toxicity(generated_texts)
-            total_toxicity += sum(toxicity_scores)
-            
+
+            # Evaluate factuality
+            for src_text, gen_text in zip(source_texts, generated_texts):
+                _, _, factuality_score = factuality_detector.generate_score(
+                    [preprocess_text(src_text)], [preprocess_text(gen_text)], summac_style=True
+                )
+                total_factuality += float(factuality_score)
+
             num_samples += len(generated_texts)
+
+            # Clear GPU cache
+            torch.cuda.empty_cache()
     
+    
+    batch_size = 32  # Adjust as needed
+    toxicity_scores = []
+    for i in tqdm(range(0, len(all_hypotheses), batch_size), desc="Evaluating Toxicity"):
+        batch = all_hypotheses[i:i+batch_size]
+        outputs = toxicity_model(batch, truncation=True, max_length=512)
+        scores = [output['score'] for output in outputs]
+        toxicity_scores.extend(scores)
+
+    total_toxicity = sum(toxicity_scores)
+
     avg_val_loss = total_val_loss / len(val_loader)
     avg_val_contrastive_loss = total_val_contrastive_loss / len(val_loader)
     avg_val_ce_loss = total_val_ce_loss / len(val_loader)
@@ -344,7 +406,7 @@ def main():
     val_neg_data = read_files('/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/validation/neg', logger, splits=['validation'])
 
     # Load index mappings
-    index_dir = '/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/indices/pos_all_neg_original'  # Update with the directory where index files are stored
+    index_dir = '/gpfs/home/bsk18/factual-bias-mitigation/data/tldr/indices/pos_all_neg_original/'  # Update with the directory where index files are stored
     train_pos_indices = load_indices(os.path.join(index_dir, 'train.positive.index'))
     train_neg_indices = load_indices(os.path.join(index_dir, 'train.negative.index'))
     val_pos_indices = load_indices(os.path.join(index_dir, 'validation.positive.index'))
@@ -396,10 +458,10 @@ def main():
 
     # Create DataLoaders
     train_loader = DataLoader(
-        train_dataset, batch_size=4, shuffle=True, collate_fn=contrastive_collate_fn
+        train_dataset, batch_size=2, shuffle=True, collate_fn=contrastive_collate_fn
     )
     val_loader = DataLoader(
-        val_dataset, batch_size=4, collate_fn=contrastive_collate_fn
+        val_dataset, batch_size=2, collate_fn=contrastive_collate_fn
     )
     
     logger.info("Created datasets")
@@ -427,7 +489,7 @@ def main():
     config = {
         "contrastive_weight": 1.0,
         "tau": 1.0,
-        "learning_rate": 5e-5,
+        "learning_rate": 5e-4,
         "epochs": 3,
         "batch_size": 8,
         "pos_data_option": args.pos_data,
@@ -448,9 +510,7 @@ def main():
     wandb.config.update(config)
 
     criterion = ContrastiveLoss(
-        alpha=config["contrastive_weight"],
         tau=config["tau"],
-        padding_idx=tokenizer.pad_token_id
     )
 
     train(
@@ -480,4 +540,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # Initialize toxicity model on CPU
+    toxicity_model = pipeline("text-classification", model="unitary/toxic-bert", device=-1)
     main()

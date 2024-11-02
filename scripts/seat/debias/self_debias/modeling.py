@@ -18,7 +18,7 @@ from transformers import (
     PhiForCausalLM, # Added for Phi 2 models
 )
 
-from scripts.seat.debias.self_debias.generation import (
+from seat.debias.self_debias.generation import (
     SelfDebiasingLogitsProcessor,
     SelfDebiasingGPT2LMHeadModel,
     SelfDebiasingT5ForConditionalGeneration,
