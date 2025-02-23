@@ -140,7 +140,7 @@ def main():
         traceback.print_exc()
 
     df = pd.DataFrame(results[model_name])
-    df.to_csv(f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/output/{model_name}_generations_no_scores.csv", index=False)
+    df.to_csv(f"your-path/factual-bias-mitigation/scripts/summarization/output/{model_name}_generations_no_scores.csv", index=False)
 
     # Evaluate toxicity
     logger.info(f"Evaluating toxicity for model: {model_name}")
@@ -156,7 +156,7 @@ def main():
 
     # Save results
     df = pd.DataFrame(results[model_name])
-    df.to_csv(f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv", index=False)
+    df.to_csv(f"your-path/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv", index=False)
     logger.info(f"Results for {model_name} saved to {model_name}_results.csv")
 
     logger.info("Evaluation complete. Results saved to CSV file.")

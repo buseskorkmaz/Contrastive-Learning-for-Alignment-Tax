@@ -27,7 +27,7 @@ def generate_latex_table():
     }
 
     output_files = {
-        model_name: f"/gpfs/home/bsk18/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv"
+        model_name: f"your-path/factual-bias-mitigation/scripts/summarization/output/{model_name}_results.csv"
         for family in model_families.values() for model_name in family
     }
 
