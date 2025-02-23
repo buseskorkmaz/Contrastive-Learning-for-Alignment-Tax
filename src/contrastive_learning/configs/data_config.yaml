@@ -1,0 +1,17 @@
+# configs/data_config.yaml
+# Dataset configuration
+num_samples: 100000
+batch_size: 1000
+process_batch_size: 32
+save_frequency: 10  # Save results every 10 batches
+
+# Processing parameters
+toxicity_threshold: 0.5
+faithfulness_threshold: 0.7
+num_augmentations: 3
+
+# Output configuration
+output_dir: "/path/to/output"
+
+# Resource configuration
+num_cpu_cores: 96  # Adjust based on your machine

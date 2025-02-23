@@ -1,0 +1,35 @@
+defaults:
+  - _self_
+  - override hydra/launcher: basic
+
+split:
+  train
+
+augmentation:
+  type: "pos/back_translation"  # or any other type
+
+data:
+  num_samples: 20000  # Or any other number that makes sense for your case
+  batch_size: 64
+  process_batch_size: 64
+  path: "constrastove_training/data/raw"
+  output_path: "constrastove_training/data/processed_filled"  # New field for final dataset
+
+processing:
+  toxicity_threshold: 0.5
+  faithfulness_threshold: 0.4
+  num_augmentations: 3
+
+models:
+  mlm_model: "roberta-large"
+  seq2seq_model: "google/flan-t5-large"
+
+output:
+  dir: "constrastove_training/output/"
+
+hydra:
+  run:
+    dir: ${output.dir}/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: true
+  output_subdir: null
