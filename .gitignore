@@ -5,3 +5,4 @@ __pycache__/
 *.e*
 data/
 factuality_detector_model/
+*.DS_Store
