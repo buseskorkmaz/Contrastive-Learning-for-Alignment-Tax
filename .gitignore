@@ -6,3 +6,4 @@ __pycache__/
 data/
 factuality_detector_model/
 *.DS_Store
+!src/contrastive_learning/src/data
